@@ -1,0 +1,43 @@
+#version 330 core
+
+
+in vec2 uv_coord;
+
+uniform sampler2D normalTexture;
+uniform sampler2D depthTexture;
+uniform sampler2D specPowIntensTexture;
+
+uniform vec3	viewLightDirection;
+uniform mat4	inv_proj_mat;
+uniform vec4	hdrColorAndIntensity;			//rgb - HDR Color, a - intensity
+uniform vec4	hdrAmbientColorAndIntensity;	//rgb - HDR Color, a - intensity
+
+layout ( location = 0 ) out vec4 outLightUp;
+
+
+void main ()
+{
+	//All calculation in view space!!!
+
+	vec3 viewNormal = texture ( normalTexture, uv_coord ).xyz * 2.0 - 1.0;
+	vec2 specPowIntens = texture ( specPowIntensTexture, uv_coord ).rb;
+	specPowIntens.r *= 255.0;
+
+	vec2 ndc = uv_coord * 2.0 - 1.0;
+	float ndcDepth = texture ( depthTexture, uv_coord ).r * 2.0f - 1.0f;
+
+	if ( ndcDepth == 1.0 )	//Very far point
+		discard;
+
+	vec4 normalizeCoordinates = vec4 ( ndc, ndcDepth, 1.0 );						//to cube [-1.0 1.0]^3
+	vec4 rawViewFragCoordinates = inv_proj_mat * normalizeCoordinates;				//need to scale by rawViewFragCoordinates.w
+	float invW = 1.0 / rawViewFragCoordinates.w;
+
+	vec3 viewFragPosition = rawViewFragCoordinates.xyz * invW;
+
+	outLightUp.rgb = hdrAmbientColorAndIntensity.rgb + hdrColorAndIntensity.rgb * max ( dot ( viewLightDirection, viewNormal ), 0.0 );
+	
+	vec3 viewToObserverDir = normalize ( -viewFragPosition );
+	vec3 viewMirroredDir = reflect ( -viewLightDirection, viewNormal );
+	outLightUp.a = pow ( max ( dot ( viewToObserverDir, viewMirroredDir ), 0.001 ), specPowIntens.x ) * specPowIntens.y * ( hdrColorAndIntensity.a + hdrAmbientColorAndIntensity.a );
+}

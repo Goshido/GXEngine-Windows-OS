@@ -1,0 +1,34 @@
+#version 330 core
+
+
+layout ( triangles ) in;
+
+uniform mat4 mod_view_proj_crop_mat[ 4 ];
+
+layout ( triangle_strip, max_vertices = 12 ) out;
+
+
+void MakeVertex ( int layer, int vertexID )
+{
+	gl_Layer = layer;
+	gl_Position = mod_view_proj_crop_mat[ layer ] * gl_in[ vertexID ].gl_Position;
+
+	EmitVertex ();
+}
+
+void MakeTriangle ( int layer )
+{
+	MakeVertex ( layer, 0 );
+	MakeVertex ( layer, 1 );
+	MakeVertex ( layer, 2 );
+
+	EndPrimitive ();
+}
+
+void main ()
+{
+	MakeTriangle ( 0 );
+	MakeTriangle ( 1 );
+	MakeTriangle ( 2 );
+	MakeTriangle ( 3 );
+}

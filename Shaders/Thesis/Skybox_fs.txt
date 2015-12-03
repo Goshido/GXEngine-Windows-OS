@@ -1,0 +1,15 @@
+#version 330 core
+
+
+in vec2 uv_coord;
+
+uniform sampler2D skySampler;
+
+layout ( location = 0 ) out vec4 color;
+
+
+void main ()
+{
+	vec4 sample = texture ( skySampler, uv_coord );
+	color = vec4 ( sample.rgb * sample.a * vec3 ( 1.0, 0.5, 0.4 ), 1.0 );
+}

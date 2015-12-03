@@ -1,0 +1,16 @@
+#version 330 core
+
+
+uniform sampler2D textureDiffuse;
+uniform sampler2D textureFiguration;
+
+in vec2 uv_coord;
+
+layout ( location = 0 ) out vec4 diffuseColor;
+layout ( location = 1 ) out vec4 figuraterColor;
+
+void main ( void )
+{
+	diffuseColor = texture ( textureDiffuse, uv_coord );
+	figuraterColor = texture ( textureFiguration, uv_coord );
+}

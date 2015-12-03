@@ -1,0 +1,48 @@
+#version 330 core
+
+
+#define GX_EPS_DEPTH	-2.7
+
+uniform sampler2D	depthTexture;
+uniform sampler2D	diffuse;
+uniform sampler2D	figuration;
+uniform vec4		projParams;		//x : m11, y : m22, z - m33, w - m34
+	
+in vec2 uv_coord;
+
+layout ( location = 0 ) out vec4 color;
+
+float GetViewDepth ( ivec2 offset )
+{
+	float depth = textureOffset ( depthTexture, uv_coord, offset ).r * 2.0 - 1.0;
+	return -projParams.w / ( depth - projParams.z );
+}
+
+float FigurationDepth ()
+{
+	float curDepth = GetViewDepth ( ivec2 ( 0, 0 ) );
+
+	if ( ( curDepth - GetViewDepth ( ivec2 ( -2,0 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 2,0 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 0,-2 ) ) ) < GX_EPS_DEPTH ) return 1.0;	
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 0,2 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( -1,-1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 0,-1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 1, -1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 (-1, 0 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 1, 0 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 (-1, 1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 0, 1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+	if ( ( curDepth - GetViewDepth ( ivec2 ( 1, 1 ) ) ) < GX_EPS_DEPTH ) return 1.0;
+
+	return 0.0;
+}
+
+void main ()
+{
+	vec4 figurationColor = texture ( figuration, uv_coord );
+	if ( ( figurationColor.a > 0.0 ) && ( FigurationDepth () > 0.0 ) )
+		color = figurationColor;
+	else
+		color = texture2D ( diffuse, uv_coord );	
+}

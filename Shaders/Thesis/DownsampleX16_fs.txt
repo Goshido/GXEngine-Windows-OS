@@ -1,0 +1,61 @@
+#version 330 core
+
+
+uniform vec2		stepXY;	
+uniform sampler2D	hdrTexture;
+uniform sampler2D	averageLumTexture;
+
+//uniform float		averageLum;
+
+in vec2 uv_coord;
+
+layout ( location = 0 ) out vec3 color;
+
+void main ()
+{
+	/*
+	Resampling pattern
+
+	o	o	o	o
+	o	+	o	o
+	o	o	o	o
+	o	o	o	o
+
+	*/
+
+	//first string
+	vec3 sum = texture ( hdrTexture, uv_coord - stepXY ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( 0.0, -stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x, -stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x + stepXY.x, -stepXY.y ) ).rgb;
+
+	//second string
+	sum += texture ( hdrTexture, uv_coord + vec2 ( -stepXY.x, 0.0 ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x, 0.0 ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x + stepXY.x, 0.0 ) ).rgb;
+
+	//third string
+	sum += texture ( hdrTexture, uv_coord + vec2 ( -stepXY.x, stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( 0.0, stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + stepXY ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x + stepXY.x, stepXY.y ) ).rgb;
+
+	//fourth string
+	sum += texture ( hdrTexture, uv_coord + vec2 ( -stepXY.x, stepXY.y + stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( 0.0, stepXY.y + stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + vec2 ( stepXY.x, stepXY.y + stepXY.y ) ).rgb;
+	sum += texture ( hdrTexture, uv_coord + stepXY + stepXY ).rgb;
+
+	// 1.0 / 16.0
+	sum *= 0.0625;
+	
+	vec3 lum = texture ( averageLumTexture, vec2 ( 0.5, 0.5 ), 11 ).rgb;
+	float La = 0.2126 * lum.r + 0.7156 * lum.g + 0.0721 * lum.b;
+	float Lw = 0.2126 * sum.r + 0.7156 * sum.g + 0.0721 * sum.b;
+
+	if ( Lw < 5.0 * La )
+		sum = vec3 ( 0.0 );
+	
+	color = sum;
+}

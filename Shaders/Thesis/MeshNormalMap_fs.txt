@@ -1,0 +1,40 @@
+#version 330 core
+
+
+uniform sampler2D	diffuseTexture;
+uniform sampler2D	emitTexture;
+uniform sampler2D	specPowMetalIntensTexture;
+uniform sampler2D	specColorTexture;
+uniform sampler2D	normalTexture;
+
+in vec2 a_uv;
+in vec3 a_normal;
+in vec3 a_tangent;
+in vec3 a_bitangent;
+
+layout ( location = 0 ) out vec4 outDiffuse;
+layout ( location = 1 ) out vec3 outNormal;
+layout ( location = 2 ) out vec3 outEmit;
+layout ( location = 3 ) out vec3 outSpecColor;
+layout ( location = 4 ) out vec3 outSpecPowMetalIntens;
+
+
+vec3 GetNormal ()
+{
+	mat3 tbn = mat3 ( a_tangent, a_bitangent, a_normal );
+
+	vec3 normalLocal = texture ( normalTexture, a_uv ).xyz * 2.0 - 1.0;
+	vec3 normalView = normalize ( tbn * normalLocal );
+
+	return normalView * 0.5 + 0.5;
+}
+
+void main ()
+{
+	vec4 diffuse = texture ( diffuseTexture, a_uv );
+	outDiffuse = diffuse;
+	outNormal = GetNormal ();
+	outEmit = texture ( emitTexture, a_uv ).rgb * 9.0;
+	outSpecColor = texture ( specColorTexture, a_uv ).rgb + vec3 ( 0.01 );
+	outSpecPowMetalIntens = texture ( specPowMetalIntensTexture, a_uv ).rgb;
+}

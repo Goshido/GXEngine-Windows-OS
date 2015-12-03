@@ -1,0 +1,31 @@
+#version 330 core
+
+
+uniform sampler2D	depthTexture;
+uniform sampler2D	preoutTexture;
+uniform vec4		projParams;		//x : m11, y : m22, z - m33, w - m34
+uniform vec3		dofParams;		//x : focus, y : focal range, z : max blurness		
+
+in vec2 uv_coord;
+
+layout ( location = 0 ) out vec4 color;
+
+void main ()
+{
+	color = texture2D ( preoutTexture, uv_coord );
+
+	vec2 ndc = uv_coord * 2.0 - 1.0;
+	float sampleDepth = texture ( depthTexture, uv_coord ).r * 2.0 - 1.0;
+	float viewDepth = projParams.w / ( sampleDepth - projParams.z );
+	float depth = length ( vec3 ( ( ndc * viewDepth ) / projParams.xy, viewDepth ) );
+
+	float f;
+	if ( depth < dofParams.x )
+		f = ( depth - dofParams.x ) / ( dofParams.y );
+	else
+	{
+		f = ( depth - dofParams.x ) / ( dofParams.y );
+		f = clamp ( f, 0.0, dofParams.z );
+	}
+	color.a = f * 0.5 + 0.5;	
+}

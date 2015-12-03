@@ -1,0 +1,108 @@
+#version 330 core
+
+
+in vec2 uv_coord;
+
+uniform sampler2D					normalSampler;
+uniform sampler2D					depthSampler;
+uniform sampler2D					specPowIntensSampler;
+uniform sampler2DArrayShadow		csmSampler;
+
+uniform vec3	viewLightDirection;
+uniform float	viewFrustumSplits[ 4 ];
+uniform mat4	inv_proj_mat;
+uniform mat4	inv_view_mat;
+uniform mat4	light_view_proj_crop_bias_mat[ 4 ];
+uniform vec4	hdrColorAndIntensity;			//rgb - HDR Color, a - intensity
+uniform vec4	hdrAmbientColorAndIntensity;	//rgb - HDR Color, a - intensity
+
+layout ( location = 0 ) out vec4 outLightUp;
+
+const float biasOffset = 2.0e-4; // Equals ev * ( 1.0 - lambda ). ev = 8.0e-4. lambda = TSCascadeShadowmap.cpp->TS_LAMBDA_FACTOR
+
+
+void GetCSMCoord ( in float viewZ, in vec4 worldFragCoord, in float offsetFactor, out vec4 csmCoord, out vec3 c_color )
+{
+	float offset = offsetFactor * biasOffset;
+	vec4 lightClipSpaceFragCoord;
+
+	if ( viewZ > viewFrustumSplits[ 3 ] )
+	{
+		lightClipSpaceFragCoord = light_view_proj_crop_bias_mat[ 3 ] * worldFragCoord;
+		lightClipSpaceFragCoord.z = lightClipSpaceFragCoord.z - offset * viewFrustumSplits[ 2 ];
+
+		csmCoord.xy = lightClipSpaceFragCoord.xy;
+		csmCoord.w = lightClipSpaceFragCoord.z; 
+		csmCoord.z = 3.0;
+
+		c_color = vec3 ( 1.0, 1.0, 0.0 );
+	}
+	else if ( viewZ > viewFrustumSplits[ 2 ] )
+	{
+		lightClipSpaceFragCoord = light_view_proj_crop_bias_mat[ 2 ] * worldFragCoord;
+		lightClipSpaceFragCoord.z = lightClipSpaceFragCoord.z - offset * viewFrustumSplits[ 1 ];
+
+		csmCoord.xy = lightClipSpaceFragCoord.xy;
+		csmCoord.w = lightClipSpaceFragCoord.z; 
+		csmCoord.z = 2.0; 
+
+		c_color = vec3 ( 0.0, 0.0, 1.0 );
+	}
+	else if ( viewZ > viewFrustumSplits[ 1 ] )
+	{
+		lightClipSpaceFragCoord = light_view_proj_crop_bias_mat[ 1 ] * worldFragCoord;
+		lightClipSpaceFragCoord.z = lightClipSpaceFragCoord.z - 4.0 * offset * viewFrustumSplits[ 0 ];
+
+		csmCoord.xy = lightClipSpaceFragCoord.xy;
+		csmCoord.w = lightClipSpaceFragCoord.z; 
+		csmCoord.z = 1.0; 
+
+		c_color = vec3 ( 0.0, 1.0, 0.0 );
+	}
+	else
+	{
+		lightClipSpaceFragCoord = light_view_proj_crop_bias_mat[ 0 ] * worldFragCoord;
+		lightClipSpaceFragCoord.z = lightClipSpaceFragCoord.z - offset;
+
+		csmCoord.xy = lightClipSpaceFragCoord.xy;
+		csmCoord.w = lightClipSpaceFragCoord.z; 
+		csmCoord.z = 0.0; 
+
+		c_color = vec3 ( 1.0, 0.0, 0.0 );
+	}
+}
+
+void main ()
+{
+	//All calculation in view space!!!
+
+	vec3 viewNormal = texture ( normalSampler, uv_coord ).xyz * 2.0 - 1.0;
+	vec2 specPowIntens = texture ( specPowIntensSampler, uv_coord ).rb;
+	specPowIntens.r *= 255.0;
+
+	vec2 ndc = uv_coord * 2.0 - 1.0;
+	float ndcDepth = texture ( depthSampler, uv_coord ).r * 2.0f - 1.0f;
+
+	if ( ndcDepth == 1.0 || ndcDepth == -1.0 )
+		discard;
+
+	vec4 normalizeCoordinates = vec4 ( ndc, ndcDepth, 1.0 );						//to cube [-1.0 1.0]^3
+	vec4 rawViewFragCoordinates = inv_proj_mat * normalizeCoordinates;				//need to scale by rawViewFragCoordinates.w
+	float invW = 1.0 / rawViewFragCoordinates.w;
+
+	vec3 viewFragPosition = rawViewFragCoordinates.xyz * invW;
+
+	vec4 worldFragPosition = inv_view_mat * vec4 ( viewFragPosition, 1.0 );
+	float dotDirNorm = dot ( viewLightDirection, viewNormal );
+
+	vec4 csmCoord;
+	vec3 c_color;
+	GetCSMCoord ( viewFragPosition.z, worldFragPosition, dotDirNorm, csmCoord, c_color );
+	float shadowFactor = texture ( csmSampler, csmCoord );
+
+	outLightUp.rgb = hdrAmbientColorAndIntensity.rgb + hdrColorAndIntensity.rgb * max ( dotDirNorm, 0.0 ) * shadowFactor/* * c_color*/;
+	
+	vec3 viewToObserverDir = normalize ( -viewFragPosition );
+	vec3 viewMirroredDir = reflect ( -viewLightDirection, viewNormal );
+	outLightUp.a = pow ( max ( dot ( viewToObserverDir, viewMirroredDir ), 0.001 ), specPowIntens.x ) * specPowIntens.y * ( hdrColorAndIntensity.a + hdrAmbientColorAndIntensity.a ) * shadowFactor;
+}

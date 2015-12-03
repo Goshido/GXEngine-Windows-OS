@@ -1,0 +1,19 @@
+#version 330 core
+
+
+#define TS_VERTEX	0
+#define TS_COLOR	1
+
+layout ( location = TS_VERTEX ) in vec3 vertex;
+layout ( location = TS_COLOR ) in vec3 color;
+
+uniform mat4	mod_view_proj_mat;
+
+out vec3 colorAttribute;
+
+void main ()
+{
+	gl_Position = mod_view_proj_mat * vec4 ( vertex, 1.0 );
+	colorAttribute = color;
+}
+

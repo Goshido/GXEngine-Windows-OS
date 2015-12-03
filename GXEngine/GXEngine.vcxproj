@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Win_GL</RootNamespace>
+    <ProjectName>GXEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Include;$(SolutionDir)Include/FreeType;$(SolutionDir)Games;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+    <TargetName>GXEditor (Mobile)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Include;$(SolutionDir)Include/FreeType;$(SolutionDir)Games;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+    <TargetName>GXThesis</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>OpenGL32.lib;dxguid.lib;dinput8.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libs</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>OpenGL32.lib;dxguid.lib;dinput8.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../Libs</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>del "$(OutDir)$(TargetName).pdb"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Games\Editor Mobile\EMActor.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMDirectedLightActor.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMLight.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMMain.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMMoveGismo.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMMoveTool.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMRenderer.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMRotateGismo.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMScaleGismo.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMTool.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMUIButton.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMUIMenu.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMUnitActor.cpp" />
+    <ClCompile Include="..\Games\MLP Ultimate\GXGameMLPUltimate.cpp" />
+    <ClCompile Include="..\Games\Test\GXBossAppleJack.cpp" />
+    <ClCompile Include="..\Games\Test\GXBossRainbowDash.cpp" />
+    <ClCompile Include="..\Games\Test\GXBossTwilightSparkle.cpp" />
+    <ClCompile Include="..\Games\Test\GXGameTest.cpp" />
+    <ClCompile Include="..\Games\Test\GXMLPRenderQuad.cpp" />
+    <ClCompile Include="..\Games\Test\GXMSkeletalAppleJack.cpp" />
+    <ClCompile Include="..\Games\Test\GXMSkeletalMLPCharacter.cpp" />
+    <ClCompile Include="..\Games\Test\GXMSkeletalRainbowDash.cpp" />
+    <ClCompile Include="..\Games\Test\GXMSkeletalTwilightSparkle.cpp" />
+    <ClCompile Include="..\Games\Test\GXPlayerCameraman.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalApplejack.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalFluttershy.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalMLPCharacter.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalPinkiePie.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalRainbowDash.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalRarity.cpp" />
+    <ClCompile Include="..\Games\Test\GXQSkeletalTwilightSparkle.cpp" />
+    <ClCompile Include="..\Games\Test\GXSkyGlobeSunny.cpp" />
+    <ClCompile Include="..\Games\Test\GXStaticMeshAJHat.cpp" />
+    <ClCompile Include="..\Games\Test\GXStaticMeshBall.cpp" />
+    <ClCompile Include="..\Games\Test\GXStaticMeshGround.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSAIController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSAmbientOcclusion.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSArizonaMap.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSBillboard.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannon.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannonAIController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannonballProjectileNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannonballProjectile.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannonballProjectileAIController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCannonNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCascadeShadowmap.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSClient.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSConfig.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSExplosionParticles.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSSkeletalMesh.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGlobals.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSHistory.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSItem.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSBloomEffect.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCamaro.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSCameraman.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSChallenger.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSExhaustParticles.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGameMain.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGBuffer.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGismoTransform.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGrass.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSGrid.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSArizonaHud.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSHud2DPen.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLandCruiser.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLandCruiserNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLandCruiserPhysicsObject.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLandCruiserPlayerController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLight.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSLoading.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMainMenu.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMarker.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMesh.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMeshTangent.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMissile.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMissileAIController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSMissileNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSArizonaPhysics.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSPhysicsObject.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSPlayerController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSPlayerControllerExt.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSRenderObject.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSRoadbed.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSScene.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSSceneKeeper.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSServer.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSShadowmap.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSSkyboxDesertSunny.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSSmokeParticles.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSSprite.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSStingerProjectile.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSStingerProjectileAIController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSStingerProjectileNetController.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSTargetManager.cpp" />
+    <ClCompile Include="..\Games\Thesis\TSWeaponAIController.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXBKELoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXBKESaver.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXBKEStructs.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXCFGLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXCFGSaver.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXFileSystem.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXImageLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXLogger.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMath.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMemory.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMTRLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMTRSaver.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMTRStructs.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXMutex.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXNativeSkeletalMesh.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXNativeStaticMeshLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXNativeStaticMeshSaver.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXOBJLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXStrings.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXThread.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXTime.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXAnimSolverMovement.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXAnimSolverPlayer.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXAnimSolverPlayerExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXArrayTextureOuter.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXAttachment.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXAVLTree.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXCamera.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXCameraman.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXCameraOrthographic.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXCameraPerspective.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXCore.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXDoFEffect.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXFont.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXFontExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXFontRenderer.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXFontStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXFontStorageExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXGlobals.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXHudSurface.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXHudSurfaceExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXIdealParticles.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXInput.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXJsonSaver.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXLocale.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXMesh.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXMotionBlurEffect.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXNetwork.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXOGGSoundProvider.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXOpenGL.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXRealParticles.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXParticleSystem.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXPhysics.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXPhysicsBoss.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXPlayerBoss.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXPSALoader.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXPSKLoader.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXRenderer.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSamplerUtils.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXShaderStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXShaderStorageExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXShaderUtils.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkeletalMesh.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkeletalMeshMat.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkeletalMeshQuat.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkeletalMeshQuatExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkeletalMeshStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSkyGlobe.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSound.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSoundChannel.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSoundEmitter.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSoundMixer.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSoundProvider.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXSoundStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXStaticMeshSkyGlobe.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXTextureOuter.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXTextureStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXTextureStorageExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXTextureUtils.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXTGALoader.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXUIExt.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXVAOStorage.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXWinMain.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXEditBox.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXUI.cpp" />
+    <ClCompile Include="..\Sources\GXEngine\GXMenu.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Games\Editor Mobile\EMActor.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMDirectedLightActor.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMLight.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMMain.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMMoveGismo.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMMoveTool.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMRenderer.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMRotateGismo.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMScaleGismo.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMTool.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMUIButton.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMUIMenu.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMUnitActor.h" />
+    <ClInclude Include="..\Games\MLP Ultimate\GXGameMLPUltimate.h" />
+    <ClInclude Include="..\Games\Test\GXBossAppleJack.h" />
+    <ClInclude Include="..\Games\Test\GXBossRainbowDash.h" />
+    <ClInclude Include="..\Games\Test\GXBossTwilightSparkle.h" />
+    <ClInclude Include="..\Games\Test\GXGameTest.h" />
+    <ClInclude Include="..\Games\Test\GXMLPRenderQuad.h" />
+    <ClInclude Include="..\Games\Test\GXMSkeletalAppleJack.h" />
+    <ClInclude Include="..\Games\Test\GXMSkeletalMLPCharacter.h" />
+    <ClInclude Include="..\Games\Test\GXMSkeletalRainbowDash.h" />
+    <ClInclude Include="..\Games\Test\GXMSkeletalTwilightSparkle.h" />
+    <ClInclude Include="..\Games\Test\GXPlayerCameraman.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalApplejack.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalFluttershy.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalMLPCharacter.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalPinkiePie.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalRainbowDash.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalRarity.h" />
+    <ClInclude Include="..\Games\Test\GXQSkeletalTwilightSparkle.h" />
+    <ClInclude Include="..\Games\Test\GXSkyGlobeSunny.h" />
+    <ClInclude Include="..\Games\Test\GXStaticMeshAJHat.h" />
+    <ClInclude Include="..\Games\Test\GXStaticMeshBall.h" />
+    <ClInclude Include="..\Games\Test\GXStaticMeshGround.h" />
+    <ClInclude Include="..\Games\Thesis\TSAIController.h" />
+    <ClInclude Include="..\Games\Thesis\TSAmbientOcclusion.h" />
+    <ClInclude Include="..\Games\Thesis\TSArizonaMap.h" />
+    <ClInclude Include="..\Games\Thesis\TSBillboard.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannon.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannonAIController.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannonballProjectileNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannonballProjectile.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannonballProjectileAIController.h" />
+    <ClInclude Include="..\Games\Thesis\TSCannonNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSCar.h" />
+    <ClInclude Include="..\Games\Thesis\TSCascadeShadowmap.h" />
+    <ClInclude Include="..\Games\Thesis\TSClient.h" />
+    <ClInclude Include="..\Games\Thesis\TSConfig.h" />
+    <ClInclude Include="..\Games\Thesis\TSExplosionParticles.h" />
+    <ClInclude Include="..\Games\Thesis\TSSkeletalMesh.h" />
+    <ClInclude Include="..\Games\Thesis\TSGlobals.h" />
+    <ClInclude Include="..\Games\Thesis\TSHistory.h" />
+    <ClInclude Include="..\Games\Thesis\TSItem.h" />
+    <ClInclude Include="..\Games\Thesis\TSBloomEffect.h" />
+    <ClInclude Include="..\Games\Thesis\TSCamaro.h" />
+    <ClInclude Include="..\Games\Thesis\TSCameraman.h" />
+    <ClInclude Include="..\Games\Thesis\TSChallenger.h" />
+    <ClInclude Include="..\Games\Thesis\TSExhaustParticles.h" />
+    <ClInclude Include="..\Games\Thesis\TSGameMain.h" />
+    <ClInclude Include="..\Games\Thesis\TSGBuffer.h" />
+    <ClInclude Include="..\Games\Thesis\TSGismoTransform.h" />
+    <ClInclude Include="..\Games\Thesis\TSGrass.h" />
+    <ClInclude Include="..\Games\Thesis\TSGrid.h" />
+    <ClInclude Include="..\Games\Thesis\TSArizonaHud.h" />
+    <ClInclude Include="..\Games\Thesis\TSHud2DPen.h" />
+    <ClInclude Include="..\Games\Thesis\TSLandCruiser.h" />
+    <ClInclude Include="..\Games\Thesis\TSLandCruiserNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSLandCruiserPhysicsObject.h" />
+    <ClInclude Include="..\Games\Thesis\TSLandCruiserPlayerController.h" />
+    <ClInclude Include="..\Games\Thesis\TSLight.h" />
+    <ClInclude Include="..\Games\Thesis\TSLoading.h" />
+    <ClInclude Include="..\Games\Thesis\TSMainMenu.h" />
+    <ClInclude Include="..\Games\Thesis\TSMarker.h" />
+    <ClInclude Include="..\Games\Thesis\TSMesh.h" />
+    <ClInclude Include="..\Games\Thesis\TSMeshTangent.h" />
+    <ClInclude Include="..\Games\Thesis\TSMissile.h" />
+    <ClInclude Include="..\Games\Thesis\TSMissileAIController.h" />
+    <ClInclude Include="..\Games\Thesis\TSMissileNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSNetProtocol.h" />
+    <ClInclude Include="..\Games\Thesis\TSArizonaPhysics.h" />
+    <ClInclude Include="..\Games\Thesis\TSPhysicsObject.h" />
+    <ClInclude Include="..\Games\Thesis\TSPlayerController.h" />
+    <ClInclude Include="..\Games\Thesis\TSPlayerControllerExt.h" />
+    <ClInclude Include="..\Games\Thesis\TSRenderObject.h" />
+    <ClInclude Include="..\Games\Thesis\TSRoadbed.h" />
+    <ClInclude Include="..\Games\Thesis\TSScene.h" />
+    <ClInclude Include="..\Games\Thesis\TSSceneKeeper.h" />
+    <ClInclude Include="..\Games\Thesis\TSServer.h" />
+    <ClInclude Include="..\Games\Thesis\TSShadowmap.h" />
+    <ClInclude Include="..\Games\Thesis\TSSkyboxDesertSunny.h" />
+    <ClInclude Include="..\Games\Thesis\TSSmokeParticles.h" />
+    <ClInclude Include="..\Games\Thesis\TSSprite.h" />
+    <ClInclude Include="..\Games\Thesis\TSStingerProjectile.h" />
+    <ClInclude Include="..\Games\Thesis\TSStingerProjectileAIController.h" />
+    <ClInclude Include="..\Games\Thesis\TSStingerProjectileNetController.h" />
+    <ClInclude Include="..\Games\Thesis\TSTargetManager.h" />
+    <ClInclude Include="..\Games\Thesis\TSWeaponAIController.h" />
+    <ClInclude Include="..\Include\GXCommon\GXBKELoader.h" />
+    <ClInclude Include="..\Include\GXCommon\GXBKESaver.h" />
+    <ClInclude Include="..\Include\GXCommon\GXBKEStructs.h" />
+    <ClInclude Include="..\Include\GXCommon\GXCFGLoader.h" />
+    <ClInclude Include="..\Include\GXCommon\GXCFGSaver.h" />
+    <ClInclude Include="..\Include\GXCommon\GXCFGStruct.h" />
+    <ClInclude Include="..\Include\GXCommon\GXMath.h" />
+    <ClInclude Include="..\Include\GXCommon\GXMTRLoader.h" />
+    <ClInclude Include="..\Include\GXCommon\GXMTRSaver.h" />
+    <ClInclude Include="..\Include\GXCommon\GXMTRStructs.h" />
+    <ClInclude Include="..\Include\GXCommon\GXNativeSkeletalMesh.h" />
+    <ClInclude Include="..\Include\GXCommon\GXNativeStaticMeshLoader.h" />
+    <ClInclude Include="..\Include\GXCommon\GXNativeStaticMeshSaver.h" />
+    <ClInclude Include="..\Include\GXCommon\GXNativeStaticMeshStructs.h" />
+    <ClInclude Include="..\Include\GXCommon\GXOBJLoader.h" />
+    <ClInclude Include="..\Include\GXCommon\GXPHGStructs.h" />
+    <ClInclude Include="..\Include\GXCommon\GXSCNStructs.h" />
+    <ClInclude Include="..\Include\GXCommon\GXSTGStructs.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAnimSolver.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAnimSolverMovement.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAnimSolverPlayer.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAnimSolverPlayerExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXArrayTextureOuter.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAttachment.h" />
+    <ClInclude Include="..\Include\GXEngine\GXAVLTree.h" />
+    <ClInclude Include="..\Include\GXEngine\GXCamera.h" />
+    <ClInclude Include="..\Include\GXEngine\GXCameraman.h" />
+    <ClInclude Include="..\Include\GXEngine\GXCameraOrthographic.h" />
+    <ClInclude Include="..\Include\GXEngine\GXCameraPerspective.h" />
+    <ClInclude Include="..\Include\GXEngine\GXCore.h" />
+    <ClInclude Include="..\Include\GXEngine\GXDoFEffect.h" />
+    <ClInclude Include="..\Include\GXEngine\GXDrawable.h" />
+    <ClInclude Include="..\Include\GXEngine\GXEngineSettings.h" />
+    <ClInclude Include="..\Include\GXEngine\GXFont.h" />
+    <ClInclude Include="..\Include\GXEngine\GXFontExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXFontRenderer.h" />
+    <ClInclude Include="..\Include\GXEngine\GXFontStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXFontStorageExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXGlobals.h" />
+    <ClInclude Include="..\Include\GXEngine\GXHudSurface.h" />
+    <ClInclude Include="..\Include\GXEngine\GXHudSurfaceExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXIdealParticles.h" />
+    <ClInclude Include="..\Include\GXEngine\GXInput.h" />
+    <ClInclude Include="..\Include\GXEngine\GXJsonSaver.h" />
+    <ClInclude Include="..\Include\GXEngine\GXLocale.h" />
+    <ClInclude Include="..\Include\GXEngine\GXMesh.h" />
+    <ClInclude Include="..\Include\GXEngine\GXMotionBlurEffect.h" />
+    <ClInclude Include="..\Include\GXEngine\GXNetwork.h" />
+    <ClInclude Include="..\Include\GXEngine\GXOGGSoundProvider.h" />
+    <ClInclude Include="..\Include\GXEngine\GXOpenGL.h" />
+    <ClInclude Include="..\Include\GXEngine\GXRealParticles.h" />
+    <ClInclude Include="..\Include\GXEngine\GXParticleSystem.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPhysics.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPhysicsBoss.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPlayerBoss.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPointLight.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPSALoader.h" />
+    <ClInclude Include="..\Include\GXEngine\GXPSKLoader.h" />
+    <ClInclude Include="..\Include\GXEngine\GXRenderer.h" />
+    <ClInclude Include="..\Include\GXEngine\GXResource.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSamplerUtils.h" />
+    <ClInclude Include="..\Include\GXEngine\GXShaderStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXShaderStorageExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXShaderUtils.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkeletalMesh.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkeletalMeshMat.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkeletalMeshQuat.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkeletalMeshQuatExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkeletalMeshStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSkyGlobe.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSound.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSoundChannel.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSoundEmitter.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSoundMixer.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSoundProvider.h" />
+    <ClInclude Include="..\Include\GXEngine\GXSoundStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXStaticMeshSkyGlobe.h" />
+    <ClInclude Include="..\Include\GXEngine\GXTextureOuter.h" />
+    <ClInclude Include="..\Include\GXEngine\GXTextureStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXTextureStorageExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXTextureUtils.h" />
+    <ClInclude Include="..\Include\GXEngine\GXTGALoader.h" />
+    <ClInclude Include="..\Include\GXEngine\GXUI.h" />
+    <ClInclude Include="..\Include\GXEngine\GXUIExt.h" />
+    <ClInclude Include="..\Include\GXEngine\GXVAOStorage.h" />
+    <ClInclude Include="..\Include\GXEngine\GXEditBox.h" />
+    <ClInclude Include="..\Include\GXEngine\GXMenu.h" />
+    <ClInclude Include="..\Include\GXEngine\UnrealStructs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\Editor Mobile\DirectedLight_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\Null_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\ScreenQuad_vs.txt" />
+    <None Include="..\Shaders\Editor Mobile\StaticMesh_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\StaticMesh_vs.txt" />
+    <None Include="..\Shaders\Editor Mobile\OneSampler_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\VertexOnly_vs.txt" />
+    <None Include="..\Shaders\System\ArrayTextureOuter_fs.txt" />
+    <None Include="..\Shaders\System\ArrayTextureOuter_vs.txt" />
+    <None Include="..\Shaders\System\DOF_fs.txt" />
+    <None Include="..\Shaders\System\DOF_vs.txt" />
+    <None Include="..\Shaders\System\GaussDownsamplerX16_First_Pass_fs.txt" />
+    <None Include="..\Shaders\System\GaussDownsamplerX16_First_Pass_vs.txt" />
+    <None Include="..\Shaders\System\GaussDownsamplerX16_Second_Pass_fs.txt" />
+    <None Include="..\Shaders\System\GaussDownsamplerX16_Second_Pass_vs.txt" />
+    <None Include="..\Shaders\System\Glyph_fs.txt" />
+    <None Include="..\Shaders\System\HudSurface_fs.txt" />
+    <None Include="..\Shaders\System\HudSurface_vs.txt" />
+    <None Include="..\Shaders\System\Line_fs.txt" />
+    <None Include="..\Shaders\System\Line_vs.txt" />
+    <None Include="..\Shaders\System\MotionBlur_fs.txt" />
+    <None Include="..\Shaders\System\MotionBlur_vs.txt" />
+    <None Include="..\Shaders\System\NativeSkin_vs.txt" />
+    <None Include="..\Shaders\System\Particle_fs.txt" />
+    <None Include="..\Shaders\System\Particle_vs.txt" />
+    <None Include="..\Shaders\System\Skeleton_fs.txt" />
+    <None Include="..\Shaders\System\Skeleton_vs.txt" />
+    <None Include="..\Shaders\System\SkinExt_fs.txt" />
+    <None Include="..\Shaders\System\SkinExt_vs.txt" />
+    <None Include="..\Shaders\System\TextureOuter_fs.txt" />
+    <None Include="..\Shaders\System\TextureOuter_vs.txt" />
+    <None Include="..\Shaders\System\TextureWithColorAndAlphaTest_fs.txt" />
+    <None Include="..\Shaders\System\VertexAndUV_vs.txt" />
+    <None Include="..\Shaders\Test\Figuration_fs.txt" />
+    <None Include="..\Shaders\Test\Figuration_vs.txt" />
+    <None Include="..\Shaders\Test\Ground_fs.txt" />
+    <None Include="..\Shaders\Test\Ground_vs.txt" />
+    <None Include="..\Shaders\Test\Shader_fs.txt" />
+    <None Include="..\Shaders\Test\Shader_vs.txt" />
+    <None Include="..\Shaders\Test\SkyGlobe_fs.txt" />
+    <None Include="..\Shaders\Test\SkyGlobe_vs.txt" />
+    <None Include="..\Shaders\Test\StaticMesh_fs.txt" />
+    <None Include="..\Shaders\Test\StaticMesh_vs.txt" />
+    <None Include="..\Shaders\Thesis\Billboard_vs.txt" />
+    <None Include="..\Shaders\Thesis\BlurXPass_fs.txt" />
+    <None Include="..\Shaders\Thesis\BlurYPass_fs.txt" />
+    <None Include="..\Shaders\Thesis\Bulp_fs.txt" />
+    <None Include="..\Shaders\Thesis\CascadeShadowmap_gs.txt" />
+    <None Include="..\Shaders\Thesis\CombineSlots_fs.txt" />
+    <None Include="..\Shaders\Thesis\DirectedLightShadows_fs.txt" />
+    <None Include="..\Shaders\Thesis\DirectedLight_fs.txt" />
+    <None Include="..\Shaders\Thesis\DownsampleX16_fs.txt" />
+    <None Include="..\Shaders\Thesis\GismoAxis_fs.txt" />
+    <None Include="..\Shaders\Thesis\GismoAxis_vs.txt" />
+    <None Include="..\Shaders\Thesis\Gismo_fs.txt" />
+    <None Include="..\Shaders\Thesis\HBlur_fs.txt" />
+    <None Include="..\Shaders\Thesis\MeshNormalMap_fs.txt" />
+    <None Include="..\Shaders\Thesis\MeshNormalMap_vs.txt" />
+    <None Include="..\Shaders\Thesis\Null_fs.txt" />
+    <None Include="..\Shaders\Thesis\PassVertex_vs.txt" />
+    <None Include="..\Shaders\Thesis\ShowParticlesFixedSize_gs.txt" />
+    <None Include="..\Shaders\Thesis\ShowParticles_fs.txt" />
+    <None Include="..\Shaders\Thesis\ShowParticles_gs.txt" />
+    <None Include="..\Shaders\Thesis\ShowParticles_vs.txt" />
+    <None Include="..\Shaders\Thesis\NativeSkin_fs.txt" />
+    <None Include="..\Shaders\Thesis\SSAO_fs.txt" />
+    <None Include="..\Shaders\Thesis\UpdateParticles_vs.txt" />
+    <None Include="..\Shaders\Thesis\Mesh_fs.txt" />
+    <None Include="..\Shaders\Thesis\Mesh_vs.txt" />
+    <None Include="..\Shaders\Thesis\Npot2Pot_fs.txt" />
+    <None Include="..\Shaders\Thesis\ScreenQuad_vs.txt" />
+    <None Include="..\Shaders\Thesis\Skybox_fs.txt" />
+    <None Include="..\Shaders\Thesis\SpotLampShadows_fs.txt" />
+    <None Include="..\Shaders\Thesis\SpotLamp_fs.txt" />
+    <None Include="..\Shaders\Thesis\Tone_fs.txt" />
+    <None Include="..\Shaders\Thesis\VBlur_fs.txt" />
+    <None Include="..\Shaders\Thesis\VertexAndUV_vs.txt" />
+    <None Include="..\Shaders\Thesis\VertexOnly_vs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Shaders\GBGabor_fs.txt" />
+    <Text Include="..\Shaders\TSMeshSimple_fs.txt" />
+    <Text Include="..\Shaders\TSMeshSimple_vs.txt" />
+    <Text Include="..\Shaders\DummyMesh_fs.txt" />
+    <Text Include="..\Shaders\DummyMesh_vs.txt" />
+    <Text Include="..\Shaders\TSMesh_fs.txt" />
+    <Text Include="..\Shaders\TSGrid_fs.txt" />
+    <Text Include="..\Shaders\TSGrid_vs.txt" />
+    <Text Include="..\Shaders\TSCombineSlots_fs.txt" />
+    <Text Include="..\Shaders\TSCombineSlots_vs.txt" />
+    <Text Include="..\Shaders\TSBulp_fs.txt" />
+    <Text Include="..\Shaders\TSBulp_vs.txt" />
+    <Text Include="..\Shaders\TSMesh_vs.txt" />
+    <Text Include="..\Shaders\TSShadowmap_fs.txt" />
+    <Text Include="..\Shaders\TSShadowmap_vs.txt" />
+    <Text Include="..\Shaders\TSSpotLamp_fs.txt" />
+    <Text Include="..\Shaders\TSSpotLamp_vs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Sources\GXEngine\GXRecource.res" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,52 @@
+#version 330 core
+
+
+uniform sampler2D normalTexture;
+uniform sampler2D depthTexture;
+uniform sampler2D specPowIntensTexture;
+
+uniform vec3	viewBulpPosition;
+uniform float	invQuadMaxDistance;
+uniform mat4	inv_proj_mat;
+uniform vec4	hdrColorAndIntensity;	//rgb - HDR Color, a - intensity
+uniform vec2	invScreenResolution;
+
+layout ( location = 0 ) out vec4 outLightUp;
+
+
+void main ()
+{
+	//All calculation in view space!!!
+
+	vec2 uv_coord = gl_FragCoord.xy * invScreenResolution;
+
+	vec3 viewNormal = texture ( normalTexture, uv_coord ).xyz * 2.0 - 1.0;
+	vec2 specPowIntens = texture ( specPowIntensTexture, uv_coord ).rb;
+	specPowIntens.r *= 255.0;
+
+	vec2 ndc = uv_coord * 2.0 - 1.0;
+	float ndcDepth = texture ( depthTexture, uv_coord ).r * 2.0f - 1.0f;
+
+	if ( ndcDepth == 1.0 )	//Very far point
+		discard;
+
+	vec4 normalizeCoordinates = vec4 ( ndc, ndcDepth, 1.0 );						//to cube [-1.0 1.0]^3
+	vec4 rawViewFragCoordinates = inv_proj_mat * normalizeCoordinates;				//need to scale by rawViewFragCoordinates.w
+	float invW = 1.0 / rawViewFragCoordinates.w;
+	vec3 viewFragPosition = rawViewFragCoordinates.xyz * invW;
+
+	vec3 viewLightDir = viewBulpPosition - viewFragPosition;
+	vec3 quadDelta = viewLightDir * viewLightDir;
+	float quadDistance = quadDelta.x + quadDelta.y + quadDelta.z;
+
+	float falloff = 1.0 - quadDistance * invQuadMaxDistance;
+	if ( falloff < 0.0 )
+		discard;
+
+	vec3 nViewLightDir = normalize ( viewLightDir );
+	outLightUp.rgb = hdrColorAndIntensity.rgb * max ( dot ( nViewLightDir, viewNormal ), 0.0 ) * falloff;
+	
+	vec3 viewToObserverDir = normalize ( -viewFragPosition );
+	vec3 viewMirroredDir = reflect ( -nViewLightDir, viewNormal );
+	outLightUp.a = pow ( max ( dot ( viewToObserverDir, viewMirroredDir ), 0.001 ), specPowIntens.x ) * specPowIntens.y * hdrColorAndIntensity.a * falloff;
+}

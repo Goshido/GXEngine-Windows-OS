@@ -1,0 +1,26 @@
+#version 330 core
+
+
+#define GX_VERTEX		0
+#define GX_UV			1
+#define GX_NORMAL		2
+
+
+layout ( location = GX_VERTEX ) in vec3 vertex;
+layout ( location = GX_UV ) in vec2 uv;
+layout ( location = GX_NORMAL ) in vec3 normal;
+
+
+uniform mat4 mod_view_proj_mat;
+uniform mat4 mod_view_mat;			//from local object normal to view space normal
+
+out vec3 a_normal;
+out vec2 a_uv;
+
+
+void main ()
+{
+	gl_Position =  mod_view_proj_mat * vec4 ( vertex, 1.0 );
+	a_normal = mat3 ( mod_view_mat ) * normal;
+	a_uv = uv;
+}

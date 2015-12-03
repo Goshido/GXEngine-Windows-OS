@@ -1,0 +1,33 @@
+#version 330 core
+
+
+#define GX_VERTEX_INDEX		0
+#define GX_UV_INDEX			1
+#define GX_NORMAL_INDEX		2
+#define GX_TANGENT_INDEX	3
+#define GX_BITANGENT_INDEX	4
+
+layout ( location = GX_VERTEX_INDEX ) in vec3 vertex;
+layout ( location = GX_UV_INDEX ) in vec2 uv;
+layout ( location = GX_NORMAL_INDEX ) in vec3 normal;
+layout ( location = GX_TANGENT_INDEX ) in vec3 tangent;
+layout ( location = GX_BITANGENT_INDEX ) in vec3 bitangent;
+
+uniform mat4 mod_view_proj_mat;
+uniform mat4 mod_view_mat;
+
+out vec2 a_uv;
+out vec3 a_normal;
+out vec3 a_tangent;
+out vec3 a_bitangent;
+
+
+void main ()
+{
+	gl_Position = mod_view_proj_mat * vec4 ( vertex, 1.0 );
+	a_uv = uv;
+	mat3 m = mat3 ( mod_view_mat );
+	a_normal = m * normal;
+	a_tangent = m * tangent;
+	a_bitangent = m * bitangent;
+}

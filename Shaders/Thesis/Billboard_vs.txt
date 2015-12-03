@@ -1,0 +1,19 @@
+#version 330 core
+
+
+#define VERTEX		0
+#define UV_COORD	1
+
+layout ( location = VERTEX ) in vec3 vertex;
+layout ( location = UV_COORD ) in vec2 uv;
+
+uniform mat4 mod_view_proj_mat;
+
+out vec2 uv_coord;
+
+
+void main ()
+{
+    gl_Position = mod_view_proj_mat * vec4 ( vertex, 1.0 );
+	uv_coord = uv;
+}

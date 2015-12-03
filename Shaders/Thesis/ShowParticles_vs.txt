@@ -1,0 +1,17 @@
+#version 330 core
+
+
+#define GX_IDEAL_PARTICLES_POSITION		0
+#define GX_IDEAL_PARTICLES_LIFETIME		2
+
+layout ( location = GX_IDEAL_PARTICLES_POSITION ) in vec3 position;
+layout ( location = GX_IDEAL_PARTICLES_LIFETIME ) in float lifetime;
+
+out float	outLifetime;
+
+
+void main ()
+{
+	outLifetime = lifetime;
+	gl_Position = vec4 ( position, 0.0 );
+}

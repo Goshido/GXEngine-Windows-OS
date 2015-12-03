@@ -1,0 +1,24 @@
+#version 330 core
+
+
+#define VERTEX		0
+#define UV_COORD	1
+#define NORMAL		2
+
+
+layout ( location = VERTEX ) in vec3 vertex;
+layout ( location = UV_COORD ) in vec2 uv;
+layout ( location = NORMAL ) in vec3 normal;
+
+uniform mat4 mod_view_proj_mat;
+
+out vec2 uv_coord;
+out vec3 a_normal;
+
+void main ()
+{
+    gl_Position = vec4 ( vertex, 1.0f ) * mod_view_proj_mat;
+	a_normal = normal;
+	uv_coord = uv;
+}
+

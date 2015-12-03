@@ -1,0 +1,52 @@
+#version 330 core
+
+
+#define GX_IDEAL_PARTICLES_POSITION		0
+#define GX_IDEAL_PARTICLES_VELOCITY		1
+#define GX_IDEAL_PARTICLES_LIFETIME		2
+#define GX_IDEAL_PARTICLES_DISTRIBUTION	3
+
+layout ( location = GX_IDEAL_PARTICLES_POSITION ) in vec3 position;
+layout ( location = GX_IDEAL_PARTICLES_VELOCITY ) in vec3 velocity;
+layout ( location = GX_IDEAL_PARTICLES_LIFETIME ) in float lifetime;
+layout ( location = GX_IDEAL_PARTICLES_DISTRIBUTION ) in vec3 distribution;
+
+uniform float	deltaTime;
+uniform float	delayTime;
+uniform float	maxLifeTime;
+uniform vec3	acceleration;
+uniform float	maxVelocity;
+uniform float	deviation;
+uniform vec3	startPosition;
+uniform mat4	local_rot_mat;
+uniform float	stopEmit;
+
+out vec3	outPosition;
+out vec3	outVelocity;
+out float	outLifetime;
+
+
+void main ()
+{
+	if ( lifetime > 0.0 )
+	{
+		outLifetime = lifetime - deltaTime;
+		outPosition = position + velocity * deltaTime;
+		outVelocity = velocity + acceleration * deltaTime;
+	}
+	else if ( lifetime < -0.2 )
+	{
+		outLifetime = lifetime + deltaTime;
+	}
+	else if ( stopEmit < 0.0 || lifetime > -0.1 )
+	{
+		outLifetime = -delayTime - 0.2;
+	}
+	else
+	{
+		outLifetime = deviation * maxLifeTime;
+		outPosition = startPosition;
+		vec4 tmp = local_rot_mat * vec4 ( distribution * maxVelocity, 1.0 );
+		outVelocity = tmp.xyz;
+	}
+}

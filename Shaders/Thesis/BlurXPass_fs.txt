@@ -1,0 +1,24 @@
+#version 330 core
+
+
+uniform float		blurX;	
+uniform sampler2D	hdrTexture;
+
+in vec2 uv_coord;
+
+layout ( location = 0 ) out vec3 color;
+
+void main ()
+{
+	vec3 sum = texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y - 4.0 * blurX ) ).rgb * 0.05;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y - 3.0 * blurX ) ).rgb * 0.09;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y - 2.0 * blurX ) ).rgb * 0.12;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y - blurX ) ).rgb * 0.15;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y ) ).rgb * 0.16;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y + blurX ) ).rgb * 0.15;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y + 2.0 * blurX ) ).rgb * 0.12;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y + 3.0 * blurX ) ).rgb * 0.09;
+	sum += texture ( hdrTexture, vec2 ( uv_coord.x, uv_coord.y + 4.0 * blurX ) ).rgb * 0.05;
+	
+	color = sum;
+}

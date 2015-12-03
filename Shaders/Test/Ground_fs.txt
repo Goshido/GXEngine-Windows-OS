@@ -1,0 +1,14 @@
+#version 330 core
+
+
+uniform sampler2D diffuseSampler;
+
+in vec2 uv_coord;
+in vec3 a_normal;
+
+layout ( location = 0 ) out vec4 color;
+
+void main ( void )
+{
+	color = texture ( diffuseSampler, uv_coord ) * max ( dot ( normalize ( vec3 ( 3.0, 6.0, 0.0 ) ), a_normal.xyz ), 0.0 );
+}

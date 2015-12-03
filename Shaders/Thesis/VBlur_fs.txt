@@ -1,0 +1,26 @@
+#version 330 core
+
+
+in vec2	uv_coord;
+
+uniform sampler2D sampler;
+
+layout ( location = 0 ) out float color;
+
+
+void main ()
+{
+	float sum = 0.05 * textureOffset ( sampler, uv_coord, ivec2 ( 0, -4 ) ).r;
+	sum += 0.09 * textureOffset ( sampler, uv_coord, ivec2 ( 0, -3 ) ).r;
+	sum += 0.12 * textureOffset ( sampler, uv_coord, ivec2 ( 0, -2 ) ).r;
+	sum += 0.15 * textureOffset ( sampler, uv_coord, ivec2 ( 0, -1 ) ).r;
+
+	sum += 0.16 * texture ( sampler, uv_coord ).r;
+
+	sum += 0.15 * textureOffset ( sampler, uv_coord, ivec2 ( 0, 1 ) ).r;
+	sum += 0.12 * textureOffset ( sampler, uv_coord, ivec2 ( 0, 2 ) ).r;
+	sum += 0.09 * textureOffset ( sampler, uv_coord, ivec2 ( 0, 3 ) ).r;
+	sum += 0.05 * textureOffset ( sampler, uv_coord, ivec2 ( 0, 4 ) ).r;
+
+	color = sum;
+}

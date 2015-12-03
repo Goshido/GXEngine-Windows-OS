@@ -1,0 +1,91 @@
+#version 330 core
+
+
+#define SAMPLES			16
+#define INV_SAMPLES		0.0625
+
+
+in vec2 uv_coord;
+
+uniform sampler2D depthSampler;
+uniform sampler2D normalSampler;
+uniform sampler2D noiseSampler;
+
+uniform vec3	kernel[ SAMPLES ];
+uniform vec2	noiseScale;
+uniform float	kernelRadius;
+uniform float	maxDistance;	
+uniform mat4	inv_proj_mat;
+uniform mat4	proj_mat;
+
+layout ( location = 0 ) out float color;
+
+
+vec3 GetTexelLocation ()
+{
+	vec4 texelClip;
+	texelClip.xy = uv_coord * 2.0 - 1.0;
+	texelClip.z = texture ( depthSampler, uv_coord ).r * 2.0 - 1.0;
+	texelClip.w = 1.0;
+
+	vec4 texelView = inv_proj_mat * texelClip;
+	texelView.xyz /= texelView.w;
+
+	return texelView.xyz;
+}
+
+float RestoreDepth ( in vec3 locationView )
+{
+	vec4 locationClip = proj_mat * vec4 ( locationView, 1.0 );
+	locationClip.xy /= locationClip.w;
+	vec2 locationUV = locationClip.xy * 0.5 + 0.5;
+
+	locationClip.z = texture ( depthSampler, locationUV ).r * 2.0 - 1.0;
+
+	float depthZ = locationClip.z * inv_proj_mat[ 2 ][ 2 ] + inv_proj_mat[ 3 ][ 2 ];
+	float depthW = locationClip.z * inv_proj_mat[ 2 ][ 3 ] + inv_proj_mat[ 3 ][ 3 ];
+	
+	return depthZ / depthW;
+}
+
+void main ()
+{
+	vec3 texelLocationView = GetTexelLocation ();
+
+	if ( texelLocationView.z > maxDistance )
+	{
+		color = 1.0;
+		return;
+	}
+
+	vec3 texelNormalView = texture ( normalSampler, uv_coord ).rgb * 2.0 - 1.0;
+	texelNormalView = normalize ( texelNormalView );
+
+	vec3 random = texture ( noiseSampler, uv_coord * noiseScale ).rgb * 2.0 - 1.0;
+	vec3 tangent = normalize ( random - texelNormalView * dot ( random, texelNormalView ) );
+	vec3 bitangent = cross ( texelNormalView, tangent );
+	mat3 tbn = mat3 ( tangent, bitangent, texelNormalView );
+
+	float ambient = 0.0;
+
+	for ( int i = 0; i < SAMPLES; i++ )
+	{
+		vec3 dir = tbn * kernel[ i ];
+		vec3 testLocationView = texelLocationView + dir * kernelRadius;
+
+		float testDepthView = testLocationView.z;
+		float factDepthView = RestoreDepth ( testLocationView );
+
+		if ( abs ( testDepthView - factDepthView ) > kernelRadius )
+		{
+			ambient += 1.0;
+			continue;
+		}
+		
+		if ( testDepthView < factDepthView )
+			ambient += 1.0;
+	}
+
+	color = ambient * INV_SAMPLES;
+	//color = pow ( ambient * INV_SAMPLES, 4.0 );
+}

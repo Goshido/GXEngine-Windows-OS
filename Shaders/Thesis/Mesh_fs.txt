@@ -1,0 +1,27 @@
+#version 330 core
+
+
+uniform sampler2D	diffuseTexture;
+uniform sampler2D	emitTexture;
+uniform sampler2D	specPowMetalIntensTexture;
+uniform sampler2D	specColorTexture;
+
+in vec3 a_normal;
+in vec2 a_uv;
+
+layout ( location = 0 ) out vec4 outDiffuse;
+layout ( location = 1 ) out vec3 outNormal;
+layout ( location = 2 ) out vec3 outEmit;
+layout ( location = 3 ) out vec3 outSpecColor;
+layout ( location = 4 ) out vec3 outSpecPowMetalIntens;
+
+
+void main ()
+{
+	vec4 diffuse = texture ( diffuseTexture, a_uv );
+	outDiffuse = diffuse;
+	outNormal = normalize ( a_normal ) * 0.5 + 0.5;
+	outEmit = texture ( emitTexture, a_uv ).rgb * 9.0;
+	outSpecColor = texture ( specColorTexture, a_uv ).rgb + vec3 ( 0.01 );
+	outSpecPowMetalIntens = texture ( specPowMetalIntensTexture, a_uv ).rgb;
+}
