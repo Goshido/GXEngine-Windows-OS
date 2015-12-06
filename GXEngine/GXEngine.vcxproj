@@ -105,6 +105,7 @@
     <ClCompile Include="..\Games\Editor Mobile\EMRotateGismo.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMScaleGismo.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMTool.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMUI.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMUIButton.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMUIMenu.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMUnitActor.cpp" />
@@ -282,6 +283,7 @@
   <ItemGroup>
     <ClInclude Include="..\Games\Editor Mobile\EMActor.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMDirectedLightActor.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMGlobals.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMLight.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMMain.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMMoveGismo.h" />
@@ -290,6 +292,7 @@
     <ClInclude Include="..\Games\Editor Mobile\EMRotateGismo.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMScaleGismo.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMTool.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMUI.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMUIButton.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMUIMenu.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMUnitActor.h" />
@@ -470,6 +473,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\Editor Mobile\DirectedLight_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\MaskVertexAndUV_vs.txt" />
+    <None Include="..\Shaders\Editor Mobile\MaskVertexOnly_vs.txt" />
+    <None Include="..\Shaders\Editor Mobile\MaskAlphaTest_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\Null_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\ScreenQuad_vs.txt" />
     <None Include="..\Shaders\Editor Mobile\StaticMesh_fs.txt" />

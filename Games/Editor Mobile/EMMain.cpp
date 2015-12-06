@@ -4,9 +4,9 @@
 #include "EMMoveGismo.h"
 #include "EMScaleGismo.h"
 #include "EMRotateGismo.h"
-#include "EMRenderer.h"
 #include "EMDirectedLightActor.h"
 #include "EMUnitActor.h"
+#include "EMGlobals.h"
 #include <GXEngine/GXGlobals.h>
 #include <GXEngine/GXOpenGL.h>
 #include <GXEngine/GXCameraOrthographic.h>
@@ -22,7 +22,6 @@ EMUIMenu*				em_Menu = 0;
 EMMoveGismo*			em_MoveGismo = 0;
 EMScaleGismo*			em_ScaleGismo = 0;
 EMRotateGismo*			em_RotateGismo = 0;
-EMRenderer*				em_Renderer = 0;
 EMDirectedLightActor*	em_DirectedLight = 0;
 EMUnitActor*			em_UnitActor = 0;
 GXInt					em_MouseX = 0;
@@ -134,8 +133,7 @@ GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 	
 	em_Renderer->StartLightPass ();
 	
-	em_Renderer->StartHudDepthDependentPass ();
-	em_Renderer->StartHudDepthIndependentPass ();
+	em_Renderer->StartHudColorPass ();
 	
 	em_MoveGismo->Draw ();
 	em_RotateGismo->Draw ();
@@ -144,6 +142,8 @@ GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 	gx_ActiveCamera = em_HudCamera;
 	
 	gx_Core->GetTouchSurface ()->DrawWidgets ();
+
+	em_Renderer->StartHudMaskPass ();
 
 	em_Renderer->PresentFrame ();
 	

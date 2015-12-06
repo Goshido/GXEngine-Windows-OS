@@ -32,7 +32,7 @@ class EMRenderer
 		GLuint						fbo;
 		GLuint						screenSampler;
 
-		GXUInt						objectMask;
+		GXUByte						objectMask[ 4 ];
 
 		GXVAOInfo					screenQuadVAO;
 		GXShaderInfo				screenQuadShader;
@@ -55,10 +55,10 @@ class EMRenderer
 
 		GXVoid StartCommonPass ();
 		GXVoid StartLightPass ();
-		GXVoid StartHudDepthDependentPass ();
-		GXVoid StartHudDepthIndependentPass ();
+		GXVoid StartHudColorPass ();
+		GXVoid StartHudMaskPass ();
 
-		GXVoid SetObjectMask ( GXUInt mask );
+		GXVoid SetObjectMask ( GXUInt object );
 
 		GXVoid PresentFrame ();
 

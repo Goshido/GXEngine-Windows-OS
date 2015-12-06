@@ -6,7 +6,7 @@
 #define GX_NORMAL_INDEX		2
 #define GX_TANGENT_INDEX	3
 #define GX_BITANGENT_INDEX	4
-#define EM_OBJECT_INDEX		5
+#define EM_OBJECT_INDEX		15
 
 layout ( location = GX_VERTEX_INDEX ) in vec3 vertex;
 layout ( location = GX_UV_INDEX ) in vec2 uv;

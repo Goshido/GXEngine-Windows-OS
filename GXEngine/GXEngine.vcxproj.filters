@@ -804,6 +804,9 @@
     <ClCompile Include="..\Games\Editor Mobile\EMMoveTool.cpp">
       <Filter>Source Files\Games\Editor Mobile</Filter>
     </ClCompile>
+    <ClCompile Include="..\Games\Editor Mobile\EMUI.cpp">
+      <Filter>Source Files\Games\Editor Mobile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\GXCommon\GXMTRLoader.h">
@@ -1367,6 +1370,12 @@
     <ClInclude Include="..\Games\Editor Mobile\EMMoveTool.h">
       <Filter>Header Files\Games\Editor Mobile\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="..\Games\Editor Mobile\EMGlobals.h">
+      <Filter>Header Files\Games\Editor Mobile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Games\Editor Mobile\EMUI.h">
+      <Filter>Header Files\Games\Editor Mobile\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\Thesis\BlurXPass_fs.txt">
@@ -1601,6 +1610,15 @@
       <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
     </None>
     <None Include="..\Shaders\Editor Mobile\ScreenQuad_vs.txt">
+      <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Editor Mobile\MaskVertexOnly_vs.txt">
+      <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Editor Mobile\MaskVertexAndUV_vs.txt">
+      <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Editor Mobile\MaskAlphaTest_fs.txt">
       <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
     </None>
   </ItemGroup>

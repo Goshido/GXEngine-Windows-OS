@@ -2,16 +2,21 @@
 #define EM_UI_BUTTON
 
 
+#include "EMUI.h"
 #include <GXEngine/GXUIExt.h>
 
-class EMUIButton
+
+class EMUIButton : public EMUI
 {
 	private:
 		GXUIButton*		widget;
 
 	public:
 		EMUIButton ();
-		~EMUIButton ();
+		virtual ~EMUIButton ();
+
+		virtual GXVoid OnDraw ();
+		virtual GXVoid OnDrawMask ();
 
 		GXVoid Enable ();
 		GXVoid Disable ();

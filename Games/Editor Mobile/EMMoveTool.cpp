@@ -11,9 +11,14 @@ EMMoveTool::~EMMoveTool ()
 
 }
 
-GXVoid EMMoveTool::Bind ( EMActor* actor )
+GXVoid EMMoveTool::Bind ()
 {
-	EMTool::Bind ( actor );
+
+}
+
+GXVoid EMMoveTool::SetActor ( EMActor* actor )
+{
+	this->actor = actor;
 }
 
 GXVoid EMMoveTool::UnBind ()
@@ -21,7 +26,12 @@ GXVoid EMMoveTool::UnBind ()
 
 }
 
-GXVoid EMMoveTool::OnDrawHudDepthIndependentPass ()
+GXVoid EMMoveTool::OnDrawHudColorPass ()
+{
+
+}
+
+GXVoid EMMoveTool::OnDrawHudMaskPass ()
 {
 
 }

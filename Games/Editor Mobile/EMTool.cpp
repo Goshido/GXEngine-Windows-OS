@@ -11,7 +11,12 @@ EMTool::~EMTool ()
 	//NOTHING
 }
 
-GXVoid EMTool::Bind ( EMActor* actor )
+GXVoid EMTool::Bind ()
+{
+	//NOTHING
+}
+
+GXVoid EMTool::SetActor ( EMActor* actor )
 {
 	this->actor = actor;
 }
@@ -26,12 +31,12 @@ GXVoid EMTool::OnDrawCommonPass ()
 	//NOTHING
 }
 
-GXVoid EMTool::OnDrawHudDepthDependentPass ()
+GXVoid EMTool::OnDrawHudColorPass ()
 {
 	//NOTHING
 }
 
-GXVoid EMTool::OnDrawHudDepthIndependentPass ()
+GXVoid EMTool::OnDrawHudMaskPass ()
 {
 	//NOTHING
 }

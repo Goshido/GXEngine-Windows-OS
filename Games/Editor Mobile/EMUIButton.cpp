@@ -2,6 +2,8 @@
 #include <GXEngine/GXHudSurfaceExt.h>
 #include <GXEngine/GXFontStorageExt.h>
 #include <GXEngine/GXTextureStorageExt.h>
+#include <GXEngine/GXShaderStorageExt.h>
+#include <GXEngine/GXSamplerUtils.h>
 #include <GXEngine/GXGlobals.h>
 #include <GXCommon/GXCommon.h>
 #include <GXCommon/GXStrings.h>
@@ -17,12 +19,17 @@ class EMUIButtonRenderer : public GXWidgetRenderer
 		GXFloat				layer;
 		GXVec4				oldBounds;
 
+		GLuint				maskSampler;
+		GLint				mod_view_proj_matLocation;
+		GXShaderInfo		maskShader;
+
 	public:
 		EMUIButtonRenderer ( GXUIButton* buttonWidget );
 		virtual ~EMUIButtonRenderer ();
 
 		virtual GXVoid Update ();
 		virtual GXVoid Draw ();
+		GXVoid DrawMask ();
 
 		GXVoid SetCaption ( const GXWChar* caption );
 		GXVoid SetLayer ( GXFloat z );
@@ -41,6 +48,24 @@ GXWidgetRenderer ( buttonWidget )
 	GXLoadTexture ( L"../Textures/System/Default_Diffuse.tga", background );
 	layer = 1.0f;
 	GXWcsclone ( &caption, L"Êíîïêà" );
+
+	GXGLSamplerStruct ss;
+	ss.anisotropy = 16.0f;
+	ss.resampling = GX_SAMPLER_RESAMPLING_NONE;
+	ss.wrap = GL_CLAMP_TO_EDGE;
+	maskSampler = GXCreateSampler ( ss );
+
+	GXGetShaderProgramExt ( maskShader, L"../Shaders/Editor Mobile/MaskVertexAndUV_vs.txt", 0, L"../Shaders/Editor Mobile/MaskAlphaTest_fs.txt" );
+
+	if ( !maskShader.isSamplersTuned )
+	{
+		const GLuint samplerIndexes[ 1 ] = { 0 };
+		const GLchar* samplerNames[ 1 ] = { "alphaSampler" };
+
+		GXTuneShaderSamplers ( maskShader, samplerIndexes, samplerNames, 1 );
+	}
+
+	mod_view_proj_matLocation = GXGetUniformLocation ( maskShader.uiId, "mod_view_proj_mat" );
 }
 
 EMUIButtonRenderer::~EMUIButtonRenderer ()
@@ -48,6 +73,11 @@ EMUIButtonRenderer::~EMUIButtonRenderer ()
 	GXSafeFree ( caption );
 	GXRemoveTextureExt ( background );
 	GXRemoveFontExt ( font );
+	GXRemoveShaderProgramExt ( maskShader );
+	maskShader.Cleanup ();
+
+	glDeleteSamplers ( 1, &maskSampler );
+
 	delete surface;
 }
 
@@ -60,6 +90,30 @@ GXVoid EMUIButtonRenderer::Update ()
 GXVoid EMUIButtonRenderer::Draw ()
 {
 	surface->Draw ();
+}
+
+GXVoid EMUIButtonRenderer::DrawMask ()
+{
+	GXMat4 mod_view_proj_mat;
+	GXMulMat4Mat4 ( mod_view_proj_mat, surface->GetModelMatrix (), gx_ActiveCamera->GetViewMatrix () );
+
+	const GXVAOInfo& surfaceVAOInfo = surface->GetMeshVAOInfo ();
+	
+	glUseProgram ( maskShader.uiId );
+
+	glUniformMatrix4fv ( mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
+	glActiveTexture ( GL_TEXTURE0 );
+	glBindTexture ( GL_TEXTURE_2D, surface->GetTexture () );
+	glBindSampler ( 0, maskSampler );
+
+	glBindVertexArray ( surfaceVAOInfo.vao );
+	glDrawArrays ( GL_TRIANGLES, 0, surfaceVAOInfo.numVertices );
+	glBindVertexArray ( 0 );
+
+	glBindTexture ( GL_TEXTURE_2D, 0 );
+	glBindSampler ( 0, 0 );
+
+	glUseProgram ( 0 );
 }
 
 GXVoid EMUIButtonRenderer::SetCaption ( const GXWChar* caption )
@@ -204,6 +258,17 @@ EMUIButton::~EMUIButton ()
 {
 	delete widget->GetRenderer ();
 	delete widget;
+}
+
+GXVoid EMUIButton::OnDraw ()
+{
+	widget->GetRenderer ()->Draw ();
+}
+
+GXVoid EMUIButton::OnDrawMask ()
+{
+	EMUIButtonRenderer* renderer = (EMUIButtonRenderer*)widget->GetRenderer ();
+	renderer->DrawMask ();
 }
 
 GXVoid EMUIButton::Enable ()

@@ -36,12 +36,12 @@ GXVoid EMActor::OnDrawCommonPass ()
 	//NOTHING
 }
 
-GXVoid EMActor::OnDrawHudDepthDependentPass ()
+GXVoid EMActor::OnDrawHudColorPass ()
 {
 	//NOTHING
 }
 
-GXVoid EMActor::OnDrawHudDepthIndependentPass ()
+GXVoid EMActor::OnDrawHudMaskPass ()
 {
 	//NOTHING
 }

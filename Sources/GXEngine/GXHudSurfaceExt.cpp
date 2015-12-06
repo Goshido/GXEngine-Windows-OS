@@ -1,4 +1,4 @@
-//version 1.13
+//version 1.14
 
 #include <GXEngine/GXHudSurfaceExt.h>
 #include <GXEngine/GXGlobals.h>
@@ -460,6 +460,11 @@ GXUInt GXHudSurfaceExt::GetTextLength ( GXFontExt* font, GXUInt bufferNumSymbols
 		free ( text );
 
 	return penX;
+}
+
+GLuint GXHudSurfaceExt::GetTexture ()
+{
+	return texObj;
 }
 
 GXVoid GXHudSurfaceExt::Draw ()

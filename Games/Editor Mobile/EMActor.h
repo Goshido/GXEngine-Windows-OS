@@ -26,8 +26,8 @@ class EMActor
 		virtual ~EMActor ();
 
 		virtual GXVoid OnDrawCommonPass ();
-		virtual GXVoid OnDrawHudDepthDependentPass ();
-		virtual GXVoid OnDrawHudDepthIndependentPass ();
+		virtual GXVoid OnDrawHudColorPass ();
+		virtual GXVoid OnDrawHudMaskPass ();
 		
 		virtual GXVoid OnUpdate ( GXFloat deltaTime );
 		virtual GXVoid OnSave ( GXUByte** data, GXUInt &size );

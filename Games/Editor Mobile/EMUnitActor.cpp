@@ -1,12 +1,9 @@
 #include "EMUnitActor.h"
-#include <GXEngine/GXGlobals.h>
+#include "EMGlobals.h"
 #include <GXEngine/GXSamplerUtils.h>
 #include <GXEngine/GXShaderStorageExt.h>
 #include <GXEngine/GXTextureStorageExt.h>
 #include <new>
-
-
-#define EM_OBJECT_INDEX		5
 
 
 class EMUnitActorMesh : public GXMesh
@@ -17,15 +14,13 @@ class EMUnitActorMesh : public GXMesh
 		GXTexture		specularTexture;
 		GXTexture		emissionTexture;
 
-		GXUByte			object[ 4 ];
-
 		GLint			mod_view_proj_matLocation;
 		GLint			mod_view_matLocation;
 
 		GLuint			sampler;
 
 	public:
-		EMUnitActorMesh ( const EMUnitActor* actor );
+		EMUnitActorMesh ();
 		virtual ~EMUnitActorMesh ();
 
 		virtual GXVoid Draw ();
@@ -35,14 +30,8 @@ class EMUnitActorMesh : public GXMesh
 		virtual GXVoid InitUniforms ();
 };
 
-EMUnitActorMesh::EMUnitActorMesh ( const EMUnitActor* actor )
+EMUnitActorMesh::EMUnitActorMesh ()
 {
-	GXUInt obj = (GXUInt)actor;
-	object[ 0 ] = (GXUByte)( obj & 0x000000FF );
-	object[ 1 ] = (GXUByte)( ( obj >> 8 ) & 0x000000FF );
-	object[ 2 ] = (GXUByte)( ( obj >> 16 ) & 0x000000FF );
-	object[ 3 ] = (GXUByte)( ( obj >> 24 ) & 0x000000FF );
-
 	Load3DModel ();
 	InitUniforms ();
 }
@@ -89,7 +78,6 @@ GXVoid EMUnitActorMesh::Draw ()
 	glBindSampler ( 3, sampler );
 	glBindTexture ( GL_TEXTURE_2D, emissionTexture.texObj );
 
-	glVertexAttrib4Nub ( EM_OBJECT_INDEX, object[ 0 ], object[ 1 ], object[ 2 ], object[ 3 ] );
 	glBindVertexArray ( vaoInfo.vao );
 
 	glDrawArrays ( GL_TRIANGLES, 0, vaoInfo.numVertices );
@@ -157,7 +145,7 @@ GXVoid EMUnitActorMesh::InitUniforms ()
 EMUnitActor::EMUnitActor ( const GXWChar* name, const GXMat4 &origin ):
 EMActor ( name, EM_UNIT_ACTOR_CLASS, origin )
 {
-	mesh = new EMUnitActorMesh ( this );
+	mesh = new EMUnitActorMesh ();
 	OnOriginChanged ();
 }
 
@@ -168,6 +156,7 @@ EMUnitActor::~EMUnitActor ()
 
 GXVoid EMUnitActor::OnDrawCommonPass ()
 {
+	em_Renderer->SetObjectMask ( (GXUInt)this );
 	mesh->Draw ();
 }
 

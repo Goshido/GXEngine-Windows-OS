@@ -1,4 +1,4 @@
-//version 1.13
+//version 1.14
 
 #ifndef GX_HUD_SURFACE_EXT
 #define GX_HUD_SURFACE_EXT
@@ -89,6 +89,7 @@ class GXHudSurfaceExt : public GXMesh
 		GXInt AddText ( const GXPenInfoExt &penInfo, GXUInt bufferNumSymbols, const GXWChar* format, ... );
 
 		GXUInt GetTextLength ( GXFontExt* font, GXUInt bufferNumSymbols, const GXWChar* format, ... );
+		GLuint GetTexture ();
 
 		virtual GXVoid Draw ();
 

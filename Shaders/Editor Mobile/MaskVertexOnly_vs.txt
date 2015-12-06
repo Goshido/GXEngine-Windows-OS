@@ -1,0 +1,19 @@
+#version 330 core
+
+
+#define GX_VERTEX_INDEX		0
+#define EM_OBJECT_INDEX		15
+
+layout ( location = GX_VERTEX_INDEX ) in vec3 vertex;
+layout ( location = EM_OBJECT_INDEX ) in vec4 object;
+
+uniform mat4 mod_view_proj_mat;
+
+flat out vec4 v_object;
+
+
+void main ()
+{
+	gl_Position = mod_view_proj_mat * vec4 ( vertex, 1.0 );
+	v_object = object;
+}

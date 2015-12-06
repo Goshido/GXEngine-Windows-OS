@@ -8,9 +8,14 @@
 #include <GXCommon/GXLogger.h>
 
 
+#define EM_OBJECT_INDEX		15
+
+EMRenderer* em_Renderer = 0;
+
+
 EMRenderer::EMRenderer ()
 {
-	objectMask = 0x00000000;
+	memset ( objectMask, 0, 4 * sizeof ( GXUByte ) );
 	mouseX = mouseY = -1;
 	OnObject = 0;
 
@@ -19,6 +24,8 @@ EMRenderer::EMRenderer ()
 	CreateScreenQuad ();
 	CreateFBO ();
 	InitDirectedLightShader ();
+
+	SetObjectMask ( 0x00000000 );
 }
 
 EMRenderer::~EMRenderer ()
@@ -128,31 +135,7 @@ GXVoid EMRenderer::StartLightPass ()
 	LightUp ();
 }
 
-GXVoid EMRenderer::StartHudDepthDependentPass ()
-{
-	glBindFramebuffer ( GL_FRAMEBUFFER, fbo );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, outTexture, 0 );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, 0, 0 );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, 0, 0 );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, 0, 0 );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, 0, 0 );
-	glFramebufferTexture ( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthStencilTexture, 0 );
-
-	glColorMask ( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-	glDepthMask ( GX_TRUE );
-	glStencilMask ( 0xFF );
-
-	glViewport ( 0, 0, gx_Core->GetRenderer ()->GetWidth (), gx_Core->GetRenderer ()->GetHeight () );
-
-	const GLenum buffers[] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers ( 1, buffers );
-
-	GLenum status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
-	if ( status != GL_FRAMEBUFFER_COMPLETE )
-		GXLogW ( L"EMRenderer::StartHudDepthDependentPass::Error - Что-то не так с FBO (ошибка 0x%08x)\n" );
-}
-
-GXVoid EMRenderer::StartHudDepthIndependentPass ()
+GXVoid EMRenderer::StartHudColorPass ()
 {
 	glBindFramebuffer ( GL_FRAMEBUFFER, fbo );
 	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, outTexture, 0 );
@@ -176,11 +159,48 @@ GXVoid EMRenderer::StartHudDepthIndependentPass ()
 	GLenum status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
 	if ( status != GL_FRAMEBUFFER_COMPLETE )
 		GXLogW ( L"EMRenderer::StartHudDepthDependentPass::Error - Что-то не так с FBO (ошибка 0x%08x)\n" );
+
+	glEnable ( GL_BLEND );
+	glEnable ( GL_DEPTH_TEST );
 }
 
-GXVoid EMRenderer::SetObjectMask ( GXUInt mask )
+GXVoid EMRenderer::StartHudMaskPass ()
 {
-	objectMask = mask;
+	glBindFramebuffer ( GL_FRAMEBUFFER, fbo );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, objectTexture, 0 );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, 0, 0 );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, 0, 0 );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, 0, 0 );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, 0, 0 );
+	glFramebufferTexture ( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthStencilTexture, 0 );
+
+	glColorMask ( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+	glDepthMask ( GX_TRUE );
+	glStencilMask ( 0xFF );
+
+	glClear ( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+
+	glViewport ( 0, 0, gx_Core->GetRenderer ()->GetWidth (), gx_Core->GetRenderer ()->GetHeight () );
+
+	const GLenum buffers[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers ( 1, buffers );
+
+	GLenum status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
+	if ( status != GL_FRAMEBUFFER_COMPLETE )
+		GXLogW ( L"EMRenderer::StartHudDepthDependentPass::Error - Что-то не так с FBO (ошибка 0x%08x)\n" );
+
+	glDisable ( GL_BLEND );
+	glEnable ( GL_DEPTH_TEST );
+}
+
+GXVoid EMRenderer::SetObjectMask ( GXUInt object )
+{
+	objectMask[ 0 ] = (GXUByte)( object & 0x000000FF );
+	objectMask[ 1 ] = (GXUByte)( ( object >> 8 ) & 0x000000FF );
+	objectMask[ 2 ] = (GXUByte)( ( object >> 16 ) & 0x000000FF );
+	objectMask[ 3 ] = (GXUByte)( ( object >> 24 ) & 0x000000FF );
+
+	glVertexAttrib4Nub ( EM_OBJECT_INDEX, objectMask[ 0 ], objectMask[ 1 ], objectMask[ 2 ], objectMask[ 3 ] );
 }
 
 GXVoid EMRenderer::PresentFrame ()

@@ -11,10 +11,12 @@ class EMMoveTool : public EMTool
 		EMMoveTool ();
 		virtual ~EMMoveTool ();
 
-		virtual GXVoid Bind ( EMActor* actor );
+		virtual GXVoid Bind ();
+		virtual GXVoid SetActor ( EMActor* actor );
 		virtual GXVoid UnBind ();
 
-		virtual GXVoid OnDrawHudDepthIndependentPass ();
+		virtual GXVoid OnDrawHudColorPass ();
+		virtual GXVoid OnDrawHudMaskPass ();
 };
 
 
