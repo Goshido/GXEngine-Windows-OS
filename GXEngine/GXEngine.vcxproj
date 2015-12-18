@@ -99,7 +99,6 @@
     <ClCompile Include="..\Games\Editor Mobile\EMDirectedLightActor.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMLight.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMMain.cpp" />
-    <ClCompile Include="..\Games\Editor Mobile\EMMoveGismo.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMMoveTool.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMRenderer.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMRotateGismo.cpp" />
@@ -286,7 +285,6 @@
     <ClInclude Include="..\Games\Editor Mobile\EMGlobals.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMLight.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMMain.h" />
-    <ClInclude Include="..\Games\Editor Mobile\EMMoveGismo.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMMoveTool.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMRenderer.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMRotateGismo.h" />
@@ -476,8 +474,10 @@
     <None Include="..\Shaders\Editor Mobile\MaskVertexAndUV_vs.txt" />
     <None Include="..\Shaders\Editor Mobile\MaskVertexOnly_vs.txt" />
     <None Include="..\Shaders\Editor Mobile\MaskAlphaTest_fs.txt" />
+    <None Include="..\Shaders\Editor Mobile\Mask_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\Null_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\ScreenQuad_vs.txt" />
+    <None Include="..\Shaders\Editor Mobile\Color_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\StaticMesh_fs.txt" />
     <None Include="..\Shaders\Editor Mobile\StaticMesh_vs.txt" />
     <None Include="..\Shaders\Editor Mobile\OneSampler_fs.txt" />

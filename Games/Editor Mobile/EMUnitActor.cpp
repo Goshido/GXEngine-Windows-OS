@@ -3,6 +3,7 @@
 #include <GXEngine/GXSamplerUtils.h>
 #include <GXEngine/GXShaderStorageExt.h>
 #include <GXEngine/GXTextureStorageExt.h>
+#include <GXCommon/GXStrings.h>
 #include <new>
 
 
@@ -158,6 +159,48 @@ GXVoid EMUnitActor::OnDrawCommonPass ()
 {
 	em_Renderer->SetObjectMask ( (GXUInt)this );
 	mesh->Draw ();
+}
+
+GXVoid EMUnitActor::OnSave ( GXUByte** data )
+{
+	EMActorHeader* header = (EMActorHeader*)data;
+
+	header->type = type;
+	memcpy ( &header->origin, &origin, sizeof ( GXMat4 ) );
+	header->isVisible = isVisible;
+	header->nameOffset = sizeof ( EMActorHeader );
+
+	GXUTF8* nameUTF8;
+	GXUInt nameSize = GXToUTF8 ( &nameUTF8, name );
+
+	memcpy ( data + sizeof ( EMActorHeader ), nameUTF8, nameSize );
+	free ( nameUTF8 );
+
+	header->size = sizeof ( EMActorHeader ) + nameSize;
+}
+
+GXVoid EMUnitActor::OnLoad ( const GXUByte* data )
+{
+	EMActorHeader* header = (EMActorHeader*)data;
+
+	isVisible = header->isVisible;
+
+	GXSafeFree ( name );
+	GXToWcs ( &name, (GXUTF8*)( data + header->nameOffset ) );
+
+	memcpy ( &origin, &header->origin, sizeof ( GXMat4 ) );
+}
+
+GXUInt EMUnitActor::OnRequeredSaveSize ()
+{
+	GXUInt total = sizeof ( EMActorHeader );
+
+	GXUTF8* nameUTF8;
+	total += GXToUTF8 ( &nameUTF8, name );
+
+	free ( nameUTF8 );
+
+	return total;
 }
 
 GXVoid EMUnitActor::OnOriginChanged ()

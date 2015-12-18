@@ -3,6 +3,8 @@
 #include <GXEngine/GXHudSurfaceExt.h>
 #include <GXEngine/GXFontStorageExt.h>
 #include <GXEngine/GXTextureStorageExt.h>
+#include <GXEngine/GXShaderStorageExt.h>
+#include <GXEngine/GXSamplerUtils.h>
 #include <GXCommon/GXMemory.h>
 #include <GXCommon/GXStrings.h>
 
@@ -17,12 +19,18 @@ class EMUIMenuRenderer : public GXWidgetRenderer
 		GXVec4				oldBounds;
 		GXFloat				layer;
 
+		GLuint				maskSampler;
+		GLint				mod_view_proj_matLocation;
+		GXShaderInfo		maskShader;
+
 	public:
 		EMUIMenuRenderer ( GXUIMenu* widget );
 		virtual ~EMUIMenuRenderer ();
 
-		virtual GXVoid Update ();
-		virtual GXVoid Draw ();
+		virtual GXVoid OnUpdate ();
+		virtual GXVoid OnDraw ();
+
+		GXVoid OnDrawMask ();
 
 		GXVoid AddItem ( const GXWChar* caption );
 		GXVoid RenameItem ( GXUByte item, const GXWChar* caption );
@@ -45,6 +53,24 @@ GXWidgetRenderer ( widget ), captions ( sizeof ( GXWChar* ) )
 	GXLoadTexture ( L"../Textures/System/Default_Diffuse.tga", background );
 	oldBounds = GXCreateVec4 ( 0.0f, 0.0f, gx_ui_Scale * 4.0f, gx_ui_Scale * 0.5f );
 	layer = 1.0f;
+
+	GXGLSamplerStruct ss;
+	ss.anisotropy = 16.0f;
+	ss.resampling = GX_SAMPLER_RESAMPLING_NONE;
+	ss.wrap = GL_CLAMP_TO_EDGE;
+	maskSampler = GXCreateSampler ( ss );
+
+	GXGetShaderProgramExt ( maskShader, L"../Shaders/Editor Mobile/MaskVertexAndUV_vs.txt", 0, L"../Shaders/Editor Mobile/MaskAlphaTest_fs.txt" );
+
+	if ( !maskShader.isSamplersTuned )
+	{
+		const GLuint samplerIndexes[ 1 ] = { 0 };
+		const GLchar* samplerNames[ 1 ] = { "alphaSampler" };
+
+		GXTuneShaderSamplers ( maskShader, samplerIndexes, samplerNames, 1 );
+	}
+
+	mod_view_proj_matLocation = GXGetUniformLocation ( maskShader.uiId, "mod_view_proj_mat" );
 }
 
 EMUIMenuRenderer::~EMUIMenuRenderer ()
@@ -59,17 +85,46 @@ EMUIMenuRenderer::~EMUIMenuRenderer ()
 		GXWChar* caption = *( (GXWChar**)captions.GetValue ( i ) );
 		GXSafeFree ( caption );
 	}
+
+	GXRemoveShaderProgramExt ( maskShader );
+	maskShader.Cleanup ();
+
+	glDeleteSamplers ( 1, &maskSampler );
 }
 
-GXVoid EMUIMenuRenderer::Update ()
+GXVoid EMUIMenuRenderer::OnUpdate ()
 {
 	CheckBounds ();
 	Refresh ();
 }
 
-GXVoid EMUIMenuRenderer::Draw ()
+GXVoid EMUIMenuRenderer::OnDraw ()
 {
 	surface->Draw ();
+}
+
+GXVoid EMUIMenuRenderer::OnDrawMask ()
+{
+	GXMat4 mod_view_proj_mat;
+	GXMulMat4Mat4 ( mod_view_proj_mat, surface->GetModelMatrix (), gx_ActiveCamera->GetViewMatrix () );
+
+	const GXVAOInfo& surfaceVAOInfo = surface->GetMeshVAOInfo ();
+	
+	glUseProgram ( maskShader.uiId );
+
+	glUniformMatrix4fv ( mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
+	glActiveTexture ( GL_TEXTURE0 );
+	glBindTexture ( GL_TEXTURE_2D, surface->GetTexture () );
+	glBindSampler ( 0, maskSampler );
+
+	glBindVertexArray ( surfaceVAOInfo.vao );
+	glDrawArrays ( GL_TRIANGLES, 0, surfaceVAOInfo.numVertices );
+	glBindVertexArray ( 0 );
+
+	glBindTexture ( GL_TEXTURE_2D, 0 );
+	glBindSampler ( 0, 0 );
+
+	glUseProgram ( 0 );
 }
 
 GXVoid EMUIMenuRenderer::AddItem ( const GXWChar* caption )
@@ -210,12 +265,18 @@ class EMUISubmenuRenderer : public GXWidgetRenderer
 		GXVec4				oldBounds;
 		GXFloat				layer;
 
+		GLuint				maskSampler;
+		GLint				mod_view_proj_matLocation;
+		GXShaderInfo		maskShader;
+
 	public:
 		EMUISubmenuRenderer ( GXUISubmenu* widget );
 		virtual ~EMUISubmenuRenderer ();
 
-		virtual GXVoid Update ();
-		virtual GXVoid Draw ();
+		virtual GXVoid OnUpdate ();
+		virtual GXVoid OnDraw ();
+
+		GXVoid OnDrawMask ();
 
 		GXVoid AddItem ( const GXWChar* caption, const GXWChar* hotkey );
 		GXVoid RenameItem ( GXUByte item, const GXWChar* caption, const GXWChar* hotkey );
@@ -235,6 +296,24 @@ GXWidgetRenderer ( widget ), items ( sizeof ( EMUISubmenuItem ) )
 	GXLoadTexture ( L"../Textures/System/Default_Diffuse.tga", background );
 	oldBounds = GXCreateVec4 ( 0.0f, 0.0f, gx_ui_Scale * 8.0f, gx_ui_Scale * 2.0f );
 	layer = 1.0f;
+
+	GXGLSamplerStruct ss;
+	ss.anisotropy = 16.0f;
+	ss.resampling = GX_SAMPLER_RESAMPLING_NONE;
+	ss.wrap = GL_CLAMP_TO_EDGE;
+	maskSampler = GXCreateSampler ( ss );
+
+	GXGetShaderProgramExt ( maskShader, L"../Shaders/Editor Mobile/MaskVertexAndUV_vs.txt", 0, L"../Shaders/Editor Mobile/MaskAlphaTest_fs.txt" );
+
+	if ( !maskShader.isSamplersTuned )
+	{
+		const GLuint samplerIndexes[ 1 ] = { 0 };
+		const GLchar* samplerNames[ 1 ] = { "alphaSampler" };
+
+		GXTuneShaderSamplers ( maskShader, samplerIndexes, samplerNames, 1 );
+	}
+
+	mod_view_proj_matLocation = GXGetUniformLocation ( maskShader.uiId, "mod_view_proj_mat" );
 }
 
 EMUISubmenuRenderer::~EMUISubmenuRenderer ()
@@ -250,17 +329,46 @@ EMUISubmenuRenderer::~EMUISubmenuRenderer ()
 		GXSafeFree ( item->caption );
 		GXSafeFree ( item->hotkey );
 	}
+
+	GXRemoveShaderProgramExt ( maskShader );
+	maskShader.Cleanup ();
+
+	glDeleteSamplers ( 1, &maskSampler );
 }
 
-GXVoid EMUISubmenuRenderer::Update ()
+GXVoid EMUISubmenuRenderer::OnUpdate ()
 {
 	CheckBounds ();
 	Refresh ();
 }
 
-GXVoid EMUISubmenuRenderer::Draw ()
+GXVoid EMUISubmenuRenderer::OnDraw ()
 {
 	surface->Draw ();
+}
+
+GXVoid EMUISubmenuRenderer::OnDrawMask ()
+{
+	GXMat4 mod_view_proj_mat;
+	GXMulMat4Mat4 ( mod_view_proj_mat, surface->GetModelMatrix (), gx_ActiveCamera->GetViewMatrix () );
+
+	const GXVAOInfo& surfaceVAOInfo = surface->GetMeshVAOInfo ();
+	
+	glUseProgram ( maskShader.uiId );
+
+	glUniformMatrix4fv ( mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
+	glActiveTexture ( GL_TEXTURE0 );
+	glBindTexture ( GL_TEXTURE_2D, surface->GetTexture () );
+	glBindSampler ( 0, maskSampler );
+
+	glBindVertexArray ( surfaceVAOInfo.vao );
+	glDrawArrays ( GL_TRIANGLES, 0, surfaceVAOInfo.numVertices );
+	glBindVertexArray ( 0 );
+
+	glBindTexture ( GL_TEXTURE_2D, 0 );
+	glBindSampler ( 0, 0 );
+
+	glUseProgram ( 0 );
 }
 
 GXVoid EMUISubmenuRenderer::AddItem ( const GXWChar* caption, const GXWChar* hotkey )
@@ -437,6 +545,23 @@ EMUIMenu::~EMUIMenu ()
 		GXUISubmenu* submenu = *( (GXUISubmenu**)submenuWidgets.GetValue ( i ) );
 		delete submenu->GetRenderer ();
 		delete submenu;
+	}
+}
+
+GXVoid EMUIMenu::OnDrawMask ()
+{
+	EMUIMenuRenderer* renderer = (EMUIMenuRenderer*)menuWidget->GetRenderer ();
+	renderer->OnDrawMask ();
+
+	GXUByte total = (GXUByte)submenuWidgets.GetLength ();
+	for ( GXUByte i = 0; i < total; i++ )
+	{
+		GXUISubmenu* submenu = *( (GXUISubmenu**)submenuWidgets.GetValue ( i ) );
+		if ( submenu->IsVisible () )
+		{
+			EMUISubmenuRenderer* renderer = (EMUISubmenuRenderer*)submenu->GetRenderer ();
+			renderer->OnDrawMask ();
+		}
 	}
 }
 

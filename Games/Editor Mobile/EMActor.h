@@ -9,6 +9,16 @@ class EMActor;
 extern EMActor* em_Actors;
 
 
+struct EMActorHeader
+{
+	GXUInt		type;
+	GXUInt		nameOffset;
+	GXMat4		origin;
+	GXBool		isVisible;
+	GXUInt		size;
+};
+
+
 class EMActor
 {
 	private:
@@ -30,7 +40,7 @@ class EMActor
 		virtual GXVoid OnDrawHudMaskPass ();
 		
 		virtual GXVoid OnUpdate ( GXFloat deltaTime );
-		virtual GXVoid OnSave ( GXUByte** data, GXUInt &size );
+		virtual GXVoid OnSave ( GXUByte** data );
 		virtual GXVoid OnLoad ( const GXUByte* data );
 		virtual GXUInt OnRequeredSaveSize ();
 		virtual GXVoid OnOriginChanged ();

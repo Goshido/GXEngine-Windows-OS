@@ -15,7 +15,6 @@ class EMUIButton : public EMUI
 		EMUIButton ();
 		virtual ~EMUIButton ();
 
-		virtual GXVoid OnDraw ();
 		virtual GXVoid OnDrawMask ();
 
 		GXVoid Enable ();

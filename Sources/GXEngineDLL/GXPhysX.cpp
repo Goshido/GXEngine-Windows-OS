@@ -8,6 +8,7 @@
 #include <GXCommon/GXNativeStaticMeshLoader.h>
 #include <GXCommon/GXLogger.h>
 #include <GXCommon/GXTime.h>
+#include <GXCommon/GXFileSystem.h>
 
 
 #define GX_PHYSICS_NB_THREADS				1

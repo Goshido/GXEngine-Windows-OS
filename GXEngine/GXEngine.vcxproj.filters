@@ -771,9 +771,6 @@
     <ClCompile Include="..\Games\Editor Mobile\EMUIMenu.cpp">
       <Filter>Source Files\Games\Editor Mobile</Filter>
     </ClCompile>
-    <ClCompile Include="..\Games\Editor Mobile\EMMoveGismo.cpp">
-      <Filter>Source Files\Games\Editor Mobile</Filter>
-    </ClCompile>
     <ClCompile Include="..\Games\Editor Mobile\EMScaleGismo.cpp">
       <Filter>Source Files\Games\Editor Mobile</Filter>
     </ClCompile>
@@ -1337,9 +1334,6 @@
     <ClInclude Include="..\Games\Editor Mobile\EMUIMenu.h">
       <Filter>Header Files\Games\Editor Mobile\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Games\Editor Mobile\EMMoveGismo.h">
-      <Filter>Header Files\Games\Editor Mobile</Filter>
-    </ClInclude>
     <ClInclude Include="..\Games\Editor Mobile\EMScaleGismo.h">
       <Filter>Header Files\Games\Editor Mobile</Filter>
     </ClInclude>
@@ -1619,6 +1613,12 @@
       <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
     </None>
     <None Include="..\Shaders\Editor Mobile\MaskAlphaTest_fs.txt">
+      <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Editor Mobile\Mask_fs.txt">
+      <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Editor Mobile\Color_fs.txt">
       <Filter>Header Files\Games\Editor Mobile\Shaders</Filter>
     </None>
   </ItemGroup>

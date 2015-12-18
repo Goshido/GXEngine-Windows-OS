@@ -1,0 +1,12 @@
+#version 330 core
+
+
+flat in vec4 v_object;
+
+layout ( location = 0 ) out vec4 outObject;
+
+
+void main ()
+{
+	outObject = v_object;
+}

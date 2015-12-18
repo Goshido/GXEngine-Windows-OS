@@ -1,6 +1,9 @@
 #include "EMTool.h"
 
 
+EMTool* em_Tool = 0;
+
+
 EMTool::EMTool ()
 {
 	actor = 0;
@@ -8,12 +11,14 @@ EMTool::EMTool ()
 
 EMTool::~EMTool ()
 {
-	//NOTHING
+	if ( em_Tool == this )
+		UnBind ();
 }
 
 GXVoid EMTool::Bind ()
 {
-	//NOTHING
+	em_Tool = this;
+	actor = 0;
 }
 
 GXVoid EMTool::SetActor ( EMActor* actor )
@@ -23,7 +28,7 @@ GXVoid EMTool::SetActor ( EMActor* actor )
 
 GXVoid EMTool::UnBind ()
 {
-	//NOTHING
+	em_Tool = 0;
 }
 
 GXVoid EMTool::OnDrawCommonPass ()

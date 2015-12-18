@@ -1,4 +1,4 @@
-//version 1.5
+//version 1.6
 
 #ifndef GX_OPENGL
 #define GX_OPENGL
@@ -35,14 +35,17 @@ extern PFNGLVERTEXATTRIBPOINTERPROC			glVertexAttribPointer;
 extern PFNGLVERTEXATTRIB4NUBPROC			glVertexAttrib4Nub;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC		glEnableVertexAttribArray;
 extern PFNGLGETUNIFORMLOCATIONPROC			glGetUniformLocation;
-extern PFNGLUNIFORMMATRIX4FVPROC			glUniformMatrix4fv;
 extern PFNGLDELETESHADERPROC				glDeleteShader;
 extern PFNGLDELETEPROGRAMPROC				glDeleteProgram;
-extern PFNGLUNIFORM4FVPROC					glUniform4fv;
+extern PFNGLUNIFORM1IPROC					glUniform1i;
+extern PFNGLUNIFORM1FPROC					glUniform1f;
 extern PFNGLUNIFORM1FVPROC					glUniform1fv;
-extern PFNGLUNIFORMMATRIX3FVPROC			glUniformMatrix3fv;
 extern PFNGLUNIFORM2FVPROC					glUniform2fv;
 extern PFNGLUNIFORM3FVPROC					glUniform3fv;
+extern PFNGLUNIFORM4FPROC					glUniform4f;
+extern PFNGLUNIFORM4FVPROC					glUniform4fv;
+extern PFNGLUNIFORMMATRIX3FVPROC			glUniformMatrix3fv;
+extern PFNGLUNIFORMMATRIX4FVPROC			glUniformMatrix4fv;
 extern PFNGLDELETEVERTEXARRAYSPROC			glDeleteVertexArrays;
 extern PFNGLDELETEBUFFERSPROC				glDeleteBuffers;
 extern PFNGLGENFRAMEBUFFERSPROC				glGenFramebuffers;
@@ -50,8 +53,6 @@ extern PFNGLBINDFRAMEBUFFERPROC				glBindFramebuffer;
 extern PFNGLFRAMEBUFFERTEXTURE2DPROC		glFramebufferTexture2D;
 extern PFNGLDELETEFRAMEBUFFERSPROC			glDeleteFramebuffers;
 extern PFNGLACTIVETEXTUREPROC				glActiveTexture;
-extern PFNGLUNIFORM1IPROC					glUniform1i;
-extern PFNGLUNIFORM1FPROC					glUniform1f;
 extern PFNGLBINDRENDERBUFFERPROC			glBindRenderbuffer;
 extern PFNGLGENRENDERBUFFERSPROC			glGenRenderbuffers;
 extern PFNGLRENDERBUFFERSTORAGEPROC			glRenderbufferStorage;

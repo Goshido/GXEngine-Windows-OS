@@ -2,10 +2,11 @@
 #define EM_UI_MENU
 
 
+#include "EMUI.h"
 #include <GXEngine/GXUIExt.h>
 
 
-class EMUIMenu
+class EMUIMenu : public EMUI
 {
 	private:
 		GXUIMenu*		menuWidget;
@@ -13,7 +14,9 @@ class EMUIMenu
 
 	public:
 		EMUIMenu ();
-		~EMUIMenu ();
+		virtual ~EMUIMenu ();
+
+		virtual GXVoid OnDrawMask ();
 
 		GXVoid AddItem ( const GXWChar* caption );
 		GXVoid RenameItem ( GXUByte item, const GXWChar* caption );

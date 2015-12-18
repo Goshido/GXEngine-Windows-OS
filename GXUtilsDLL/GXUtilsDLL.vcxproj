@@ -94,7 +94,7 @@ copy "$(OutDir)$(TargetName).dll" "$(SolutionDir)Editor Utils/GXFileCompiler/exe
     <ClCompile Include="..\Sources\GXCommon\GXBKEStructs.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXCFGLoader.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXCFGSaver.cpp" />
-    <ClCompile Include="..\Sources\GXCommon\GXFileLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXFileSystem.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXLogger.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXMath.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXMTRLoader.cpp" />

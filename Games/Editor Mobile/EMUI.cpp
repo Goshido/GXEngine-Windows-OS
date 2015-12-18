@@ -23,11 +23,6 @@ EMUI::~EMUI ()
 		em_UIElements = next;
 }
 
-GXVoid EMUI::OnDraw ()
-{
-	//NOTHING
-}
-
 GXVoid EMUI::OnDrawMask ()
 {
 	//NOTHING
@@ -37,8 +32,7 @@ GXVoid EMUI::OnDrawMask ()
 
 GXVoid GXCALL EMDrawUI ()
 {
-	for ( EMUI* ui = em_UIElements; ui; ui = ui->next )
-		ui->OnDraw ();
+	gx_Core->GetTouchSurface ()->DrawWidgets ();
 }
 
 GXVoid GXCALL EMDrawUIMasks ()

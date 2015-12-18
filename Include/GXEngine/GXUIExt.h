@@ -33,8 +33,8 @@ class GXWidgetRenderer
 		GXWidgetRenderer ( GXWidget* widget );
 		virtual ~GXWidgetRenderer ();
 
-		virtual GXVoid Update ();
-		virtual GXVoid Draw ();
+		virtual GXVoid OnUpdate ();
+		virtual GXVoid OnDraw ();
 };
 
 class GXWidget

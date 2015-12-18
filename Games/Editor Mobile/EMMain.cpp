@@ -1,17 +1,14 @@
 #include "EMMain.h"
 #include "EMUIButton.h"
 #include "EMUIMenu.h"
-#include "EMMoveGismo.h"
-#include "EMScaleGismo.h"
-#include "EMRotateGismo.h"
 #include "EMDirectedLightActor.h"
 #include "EMUnitActor.h"
 #include "EMGlobals.h"
+#include "EMMoveTool.h"
 #include <GXEngine/GXGlobals.h>
 #include <GXEngine/GXOpenGL.h>
 #include <GXEngine/GXCameraOrthographic.h>
 #include <GXEngine/GXCameraPerspective.h>
-#include <GXEngine/GXUIExt.h>
 
 
 GXCameraOrthographic*	em_HudCamera = 0;
@@ -19,11 +16,9 @@ GXCameraPerspective*	em_SceneCamera = 0;
 EMUIButton*				em_Button1 = 0;
 EMUIButton*				em_Button2 = 0;
 EMUIMenu*				em_Menu = 0;
-EMMoveGismo*			em_MoveGismo = 0;
-EMScaleGismo*			em_ScaleGismo = 0;
-EMRotateGismo*			em_RotateGismo = 0;
 EMDirectedLightActor*	em_DirectedLight = 0;
 EMUnitActor*			em_UnitActor = 0;
+EMMoveTool*				em_MoveTool = 0;
 GXInt					em_MouseX = 0;
 GXInt					em_MouseY = 0;
 
@@ -75,25 +70,10 @@ GXVoid GXCALL EMOnDummy ( GXFloat x, GXFloat y, eGXMouseButtonState state )
 	//NOTHING
 }
 
-GXVoid GXCALL EMOnToolMove ( GXFloat x, GXFloat y, eGXMouseButtonState state )
-{
-	em_ScaleGismo->Hide ();
-	em_RotateGismo->Hide ();
-	em_MoveGismo->Show ();
-}
 
-GXVoid GXCALL EMOnToolRotate ( GXFloat x, GXFloat y, eGXMouseButtonState state )
+GXVoid GXCALL EMOnMoveTool ( GXFloat x, GXFloat y, eGXMouseButtonState state )
 {
-	em_MoveGismo->Hide ();
-	em_ScaleGismo->Hide ();
-	em_RotateGismo->Show ();
-}
-
-GXVoid GXCALL EMOnToolScale ( GXFloat x, GXFloat y, eGXMouseButtonState state )
-{
-	em_MoveGismo->Hide ();
-	em_RotateGismo->Hide ();
-	em_ScaleGismo->Show ();
+	//TODO
 }
 
 //-----------------------------------------------------------------------------
@@ -134,25 +114,22 @@ GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 	em_Renderer->StartLightPass ();
 	
 	em_Renderer->StartHudColorPass ();
-	
-	em_MoveGismo->Draw ();
-	em_RotateGismo->Draw ();
-	em_ScaleGismo->Draw ();
-	
+	em_MoveTool->OnDrawHudColorPass ();
+
 	gx_ActiveCamera = em_HudCamera;
 	
-	gx_Core->GetTouchSurface ()->DrawWidgets ();
+	EMDrawUI ();
 
 	em_Renderer->StartHudMaskPass ();
+	EMDrawUIMasks ();
+
+	gx_ActiveCamera = em_SceneCamera;
+	em_MoveTool->OnDrawHudMaskPass ();
 
 	em_Renderer->PresentFrame ();
 	
 	GXMat4 r;
 	GXSetMat4RotationXYZ ( r, 2.0f * em_Angle, 1.5f * em_Angle, 4.0f * em_Angle );
-
-	em_MoveGismo->SetRotation ( r );
-	em_RotateGismo->SetRotation ( r );
-	em_ScaleGismo->SetRotation ( r );
 
 	em_UnitActor->SetOrigin ( r );
 	
@@ -207,9 +184,10 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 	em_Menu->AddSubitem ( 1, locale->GetString ( L"Create->Bulp" ), 0, &EMOnDummy );
 
 	em_Menu->AddItem ( locale->GetString ( L"Main menu->Tools" ) );
-	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Move" ), locale->GetString ( L"Tools->Move (Hotkey)" ), &EMOnToolMove );
-	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Rotate" ), locale->GetString ( L"Tools->Rotate (Hotkey)" ), &EMOnToolRotate );
-	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Scale" ), locale->GetString ( L"Tools->Scale (Hotkey)" ), &EMOnToolScale );
+	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Select" ), locale->GetString ( L"Tools->Select (Hotkey)" ), &EMOnDummy );
+	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Move" ), locale->GetString ( L"Tools->Move (Hotkey)" ), &EMOnMoveTool );
+	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Rotate" ), locale->GetString ( L"Tools->Rotate (Hotkey)" ), &EMOnDummy );
+	em_Menu->AddSubitem ( 2, locale->GetString ( L"Tools->Scale" ), locale->GetString ( L"Tools->Scale (Hotkey)" ), &EMOnDummy );
 
 	em_Menu->AddItem ( locale->GetString ( L"Main menu->Utility" ) );
 	em_Menu->AddSubitem ( 3, locale->GetString ( L"Utility->Particle system" ), 0, &EMOnDummy );
@@ -222,18 +200,15 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 	em_Menu->SetLayer ( 50.0f );
 	em_Menu->SetLocation ( 0.0f, h - gx_ui_Scale * 0.5f );
 
-	em_MoveGismo = new EMMoveGismo ();
-	em_MoveGismo->Hide ();
-	em_RotateGismo = new EMRotateGismo ();
-	em_RotateGismo->Hide ();
-	em_ScaleGismo = new EMScaleGismo ();
-	em_ScaleGismo->Hide ();
-
 	GXMat4 origin;
 	GXSetMat4Identity ( origin );
 	em_DirectedLight = new EMDirectedLightActor ( L"Directed light 01", origin );
 
 	em_UnitActor = new EMUnitActor ( L"Unit actor 01", origin );
+
+	em_MoveTool = new EMMoveTool ();
+	em_MoveTool->Bind ();
+	em_MoveTool->SetActor ( em_UnitActor );
 
 	ShowCursor ( 1 );
 }
@@ -249,12 +224,9 @@ GXVoid GXCALL EMOnDeleteRenderableObjects ()
 	GXSafeDelete ( em_HudCamera );
 	GXSafeDelete ( em_SceneCamera );
 
-	em_MoveGismo->Delete ();
-	em_MoveGismo->Draw ();
-	em_ScaleGismo->Delete ();
-	em_ScaleGismo->Draw ();
-	em_RotateGismo->Delete ();
-	em_RotateGismo->Draw ();
+	em_MoveTool->UnBind ();
+	em_MoveTool->Delete ();
+	em_MoveTool->OnDrawHudColorPass ();
 
 	GXSafeDelete ( em_Renderer );
 }

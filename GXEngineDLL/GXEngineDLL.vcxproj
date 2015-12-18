@@ -99,7 +99,7 @@ del "$(OutDir)$(TargetName).exp"</Command>
     <ClCompile Include="..\Sources\GXCommon\GXBKELoader.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXBKESaver.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXBKEStructs.cpp" />
-    <ClCompile Include="..\Sources\GXCommon\GXFileLoader.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXFileSystem.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXLogger.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXMath.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXMTRLoader.cpp" />

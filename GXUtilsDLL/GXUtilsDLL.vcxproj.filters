@@ -42,9 +42,6 @@
     <ClCompile Include="..\Sources\GXCommon\GXCFGSaver.cpp">
       <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Sources\GXCommon\GXFileLoader.cpp">
-      <Filter>Source Files\GXCommon</Filter>
-    </ClCompile>
     <ClCompile Include="..\Sources\GXCommon\GXLogger.cpp">
       <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
@@ -79,6 +76,9 @@
       <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
     <ClCompile Include="..\Sources\GXCommon\GXTime.cpp">
+      <Filter>Source Files\GXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\GXCommon\GXFileSystem.cpp">
       <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
   </ItemGroup>

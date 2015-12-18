@@ -18,7 +18,6 @@ class EMUI
 		EMUI ();
 		virtual ~EMUI ();
 
-		virtual GXVoid OnDraw ();
 		virtual GXVoid OnDrawMask ();
 };
 

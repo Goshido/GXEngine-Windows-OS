@@ -27,9 +27,10 @@ class EMUIButtonRenderer : public GXWidgetRenderer
 		EMUIButtonRenderer ( GXUIButton* buttonWidget );
 		virtual ~EMUIButtonRenderer ();
 
-		virtual GXVoid Update ();
-		virtual GXVoid Draw ();
-		GXVoid DrawMask ();
+		virtual GXVoid OnUpdate ();
+		virtual GXVoid OnDraw ();
+
+		GXVoid OnDrawMask ();
 
 		GXVoid SetCaption ( const GXWChar* caption );
 		GXVoid SetLayer ( GXFloat z );
@@ -81,18 +82,18 @@ EMUIButtonRenderer::~EMUIButtonRenderer ()
 	delete surface;
 }
 
-GXVoid EMUIButtonRenderer::Update ()
+GXVoid EMUIButtonRenderer::OnUpdate ()
 {
 	CheckBounds ();
 	Refresh ();
 }
 
-GXVoid EMUIButtonRenderer::Draw ()
+GXVoid EMUIButtonRenderer::OnDraw ()
 {
 	surface->Draw ();
 }
 
-GXVoid EMUIButtonRenderer::DrawMask ()
+GXVoid EMUIButtonRenderer::OnDrawMask ()
 {
 	GXMat4 mod_view_proj_mat;
 	GXMulMat4Mat4 ( mod_view_proj_mat, surface->GetModelMatrix (), gx_ActiveCamera->GetViewMatrix () );
@@ -260,15 +261,10 @@ EMUIButton::~EMUIButton ()
 	delete widget;
 }
 
-GXVoid EMUIButton::OnDraw ()
-{
-	widget->GetRenderer ()->Draw ();
-}
-
 GXVoid EMUIButton::OnDrawMask ()
 {
 	EMUIButtonRenderer* renderer = (EMUIButtonRenderer*)widget->GetRenderer ();
-	renderer->DrawMask ();
+	renderer->OnDrawMask ();
 }
 
 GXVoid EMUIButton::Enable ()

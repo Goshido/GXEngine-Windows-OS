@@ -45,12 +45,12 @@ GXWidgetRenderer::~GXWidgetRenderer ()
 	//NOTHING
 }
 
-GXVoid GXWidgetRenderer::Update ()
+GXVoid GXWidgetRenderer::OnUpdate ()
 {
 	//NOTHING
 }
 
-GXVoid GXWidgetRenderer::Draw ()
+GXVoid GXWidgetRenderer::OnDraw ()
 {
 	//NOTHING
 }
@@ -108,7 +108,7 @@ GXVoid GXWidget::OnMessage ( GXUInt message, const GXVoid* data )
 		{
 				memcpy ( &bounds, data, sizeof ( GXAABB ) );
 				if ( renderer )
-					renderer->Update ();
+					renderer->OnUpdate ();
 		}
 		break;
 
@@ -125,7 +125,7 @@ GXVoid GXWidget::OnMessage ( GXUInt message, const GXVoid* data )
 GXVoid GXWidget::OnDraw ()
 {
 	if ( renderer )
-		renderer->Draw ();
+		renderer->OnDraw ();
 }
 
 GXVoid GXWidget::Resize ( GXFloat x, GXFloat y, GXFloat width, GXFloat height )
@@ -369,7 +369,7 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isPressed = GX_TRUE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 
 			if ( !OnLeftMouseButton ) return;
 
@@ -385,7 +385,7 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isPressed = GX_FALSE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 
 			if ( !OnLeftMouseButton ) return;
 
@@ -400,7 +400,7 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isHighlighted = GX_TRUE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		case GX_MSG_MOUSE_LEAVE:
@@ -410,7 +410,7 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isPressed = GX_FALSE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		case GX_MSG_ENABLE:
@@ -420,7 +420,7 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isHighlighted = GX_FALSE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		case GX_MSG_DISABLE:
@@ -429,12 +429,12 @@ GXVoid GXUIButton::OnMessage ( GXUInt message, const GXVoid* data )
 			isDisabled = GX_TRUE;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		case GX_MSG_REDRAW:
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		default:
@@ -518,7 +518,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 				GXWidget::OnMessage ( message, data );
 
 				if ( renderer )
-					renderer->Update ();
+					renderer->OnUpdate ();
 
 				return;
 			}
@@ -547,7 +547,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			GXAddVertexToAABB ( bounds, item->bounds.max.x, item->bounds.max.y, item->bounds.max.z );
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -581,7 +581,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			items.SetValue ( total, &item );
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -608,7 +608,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			bounds.max.x = p->bounds.max.x;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -652,7 +652,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -669,13 +669,13 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
 		case GX_MSG_REDRAW:
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		case GX_MSG_LMBDOWN:
@@ -695,7 +695,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -715,7 +715,7 @@ GXVoid GXUIMenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -802,7 +802,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 				GXWidget::OnMessage ( message, data );
 
 				if ( renderer )
-					renderer->Update ();
+					renderer->OnUpdate ();
 
 				return;
 			}
@@ -834,7 +834,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 				GXAddVertexToAABB ( bounds, bottomItem->bounds.max.x, bottomItem->bounds.max.y, bottomItem->bounds.max.z );
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -864,7 +864,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			items.SetValue ( total, &item );
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -893,7 +893,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			bounds.max.y = topItem->bounds.max.y;
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -936,7 +936,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -955,7 +955,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -975,7 +975,7 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
@@ -1002,13 +1002,13 @@ GXVoid GXUISubmenu::OnMessage ( GXUInt message, const GXVoid* data )
 			}
 
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		}
 		break;
 
 		case GX_MSG_REDRAW:
 			if ( renderer )
-				renderer->Update ();
+				renderer->OnUpdate ();
 		break;
 
 		default:

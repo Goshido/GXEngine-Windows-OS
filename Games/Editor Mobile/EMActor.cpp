@@ -51,10 +51,9 @@ GXVoid EMActor::OnUpdate ( GXFloat deltaTime )
 	//NOTHING
 }
 
-GXVoid EMActor::OnSave ( GXUByte** data, GXUInt &size )
+GXVoid EMActor::OnSave ( GXUByte** data )
 {
-	*data = 0;
-	size = 0;
+	//NOTHING
 }
 
 GXVoid EMActor::OnLoad ( const GXUByte* data )
@@ -64,6 +63,7 @@ GXVoid EMActor::OnLoad ( const GXUByte* data )
 
 GXUInt EMActor::OnRequeredSaveSize ()
 {
+	//NOTHING
 	return 0;
 }
 

@@ -460,6 +460,9 @@ GXVoid EMRenderer::LightUpByBulp ( EMBulp* light )
 
 GXUInt EMRenderer::SampleObject ()
 {
+	if ( mouseX < 0 || mouseX >= gx_Core->GetRenderer ()->GetWidth () ) return 0x00000000;
+	if ( mouseY < 0 || mouseY >= gx_Core->GetRenderer ()->GetHeight () ) return 0x00000000;
+
 	glBindFramebuffer ( GL_READ_FRAMEBUFFER, fbo );
 	glFramebufferTexture ( GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, objectTexture, 0 );
 	glReadBuffer ( GL_COLOR_ATTACHMENT0 );

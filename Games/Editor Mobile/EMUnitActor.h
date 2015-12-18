@@ -21,6 +21,10 @@ class EMUnitActor : public EMActor
 		virtual ~EMUnitActor ();
 
 		virtual GXVoid OnDrawCommonPass ();
+
+		virtual GXVoid OnSave ( GXUByte** data );
+		virtual GXVoid OnLoad ( const GXUByte* data );
+		virtual GXUInt OnRequeredSaveSize ();
 		virtual GXVoid OnOriginChanged ();
 };
 
