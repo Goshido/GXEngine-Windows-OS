@@ -1,7 +1,8 @@
-//version 1.4
+//version 1.5
 
 #ifndef GX_TYPES
 #define GX_TYPES
+
 
 #define WIN32_LEAN_AND_MEAN			//Нужно для правильного подключения WinSock2.h
 #include <Windows.h>
@@ -27,6 +28,7 @@ typedef void					GXVoid;
 typedef ptrdiff_t				GXPointer;
 
 #define	GXCALL			WINAPI
+#define GXCDECLCALL		__cdecl
 #define GXTHREADCALL	WINAPI
 
 #define GX_TRUE			true

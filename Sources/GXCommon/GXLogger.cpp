@@ -1,4 +1,4 @@
-//version 1.3
+//version 1.4
 
 #include <GXCommon/GXLogger.h>
 #include <GXCommon/GXMutex.h>
@@ -32,7 +32,7 @@ GXVoid GXCALL GXLogDestroy ()
 	GXSafeDelete ( gx_lggr_ConsoleMutex );
 }
 
-GXVoid GXCALL GXLogA ( const GXMBChar* format, ... )
+GXVoid GXCDECLCALL GXLogA ( const GXMBChar* format, ... )
 {
 	if ( gx_lggr_ConsoleMutex )
 	{
@@ -52,7 +52,7 @@ GXVoid GXCALL GXLogA ( const GXMBChar* format, ... )
 	}
 }
 
-GXVoid GXCALL GXLogW ( const GXWChar* format, ... )
+GXVoid GXCDECLCALL GXLogW ( const GXWChar* format, ... )
 {
 	if ( gx_lggr_ConsoleMutex )
 	{

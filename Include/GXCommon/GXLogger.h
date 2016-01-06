@@ -1,4 +1,4 @@
-//version 1.3
+//version 1.4
 
 #ifndef GX_LOGGER
 #define GX_LOGGER
@@ -15,8 +15,8 @@
 GXVoid GXCALL GXLogInit ();
 GXVoid GXCALL GXLogDestroy ();
 
-GXVoid GXCALL GXLogA ( const GXMBChar* format, ... );
-GXVoid GXCALL GXLogW ( const GXWChar* format, ... );
+GXVoid GXCDECLCALL GXLogA ( const GXMBChar* format, ... );
+GXVoid GXCDECLCALL GXLogW ( const GXWChar* format, ... );
 
 //GXVoid GXCALL GXSeeError ( LPTSTR lpszFunction, GXBool isDebugBox );
 

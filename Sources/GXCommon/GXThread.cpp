@@ -31,8 +31,8 @@ GXVoid GXThread::Suspend ()
 {
 	if ( state == GX_SUSPEND ) return;
 
-	SuspendThread ( thread );
 	state = GX_SUSPEND;
+	SuspendThread ( thread );
 }
 
 GXVoid GXThread::Resume ()
