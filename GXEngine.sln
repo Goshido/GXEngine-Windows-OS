@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GXEngine", "GXEngine\GXEngine.vcxproj", "{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GXEngineDLL", "GXEngineDLL\GXEngineDLL.vcxproj", "{9F09E7B7-188C-4119-9FFB-AA3CD6ABF95C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GXUtilsDLL", "GXUtilsDLL\GXUtilsDLL.vcxproj", "{4CA3C5D1-57A1-43AD-8DFB-C60D660F0817}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}.Debug|Win32.Build.0 = Debug|Win32
+		{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}.Release|Win32.ActiveCfg = Release|Win32
+		{E7415CD1-5B4B-4E6D-BE1F-2BE3EA4162EB}.Release|Win32.Build.0 = Release|Win32
+		{9F09E7B7-188C-4119-9FFB-AA3CD6ABF95C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F09E7B7-188C-4119-9FFB-AA3CD6ABF95C}.Debug|Win32.Build.0 = Debug|Win32
+		{9F09E7B7-188C-4119-9FFB-AA3CD6ABF95C}.Release|Win32.ActiveCfg = Release|Win32
+		{9F09E7B7-188C-4119-9FFB-AA3CD6ABF95C}.Release|Win32.Build.0 = Release|Win32
+		{4CA3C5D1-57A1-43AD-8DFB-C60D660F0817}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4CA3C5D1-57A1-43AD-8DFB-C60D660F0817}.Debug|Win32.Build.0 = Debug|Win32
+		{4CA3C5D1-57A1-43AD-8DFB-C60D660F0817}.Release|Win32.ActiveCfg = Release|Win32
+		{4CA3C5D1-57A1-43AD-8DFB-C60D660F0817}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
