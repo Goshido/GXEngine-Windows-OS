@@ -105,10 +105,6 @@ int wmain ( int argc, LPWSTR commandline )
 		shaders[ 6 ].gShaderFileName = 0;
 		shaders[ 6 ].fShaderFileName = L"../Shaders/Thesis/Null_fs.txt";
 
-		shaders[ 7 ].vShaderFileName = L"../Shaders/Thesis/ScreenQuad_vs.txt";
-		shaders[ 7 ].gShaderFileName = 0;
-		shaders[ 7 ].fShaderFileName = L"../Shaders/Thesis/DirectedLight_fs.txt";
-
 		matInfo.shaders = shaders;
 	
 		GXExportMTR ( L"../Materials/Thesis/Fluttershy.mtr", matInfo );
