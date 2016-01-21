@@ -1,4 +1,4 @@
-//version 1.2
+//version 1.3
 
 #ifndef	GX_ANIM_SOLVER_PLAYER
 #define	GX_ANIM_SOLVER_PLAYER

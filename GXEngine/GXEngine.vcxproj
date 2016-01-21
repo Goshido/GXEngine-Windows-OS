@@ -192,6 +192,7 @@
     <ClCompile Include="..\Games\Thesis\TSStingerProjectileNetController.cpp" />
     <ClCompile Include="..\Games\Thesis\TSTargetManager.cpp" />
     <ClCompile Include="..\Games\Thesis\TSWeaponAIController.cpp" />
+    <ClCompile Include="..\Sources\GXCommon\GXAVLTree.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXBKELoader.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXBKESaver.cpp" />
     <ClCompile Include="..\Sources\GXCommon\GXBKEStructs.cpp" />
@@ -218,7 +219,6 @@
     <ClCompile Include="..\Sources\GXEngine\GXAnimSolverPlayerExt.cpp" />
     <ClCompile Include="..\Sources\GXEngine\GXArrayTextureOuter.cpp" />
     <ClCompile Include="..\Sources\GXEngine\GXAttachment.cpp" />
-    <ClCompile Include="..\Sources\GXEngine\GXAVLTree.cpp" />
     <ClCompile Include="..\Sources\GXEngine\GXCamera.cpp" />
     <ClCompile Include="..\Sources\GXEngine\GXCameraman.cpp" />
     <ClCompile Include="..\Sources\GXEngine\GXCameraOrthographic.cpp" />

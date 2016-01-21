@@ -639,9 +639,6 @@
     <ClCompile Include="..\Sources\GXEngine\GXEditBox.cpp">
       <Filter>Source Files\GXEngine</Filter>
     </ClCompile>
-    <ClCompile Include="..\Sources\GXEngine\GXAVLTree.cpp">
-      <Filter>Source Files\GXEngine</Filter>
-    </ClCompile>
     <ClCompile Include="..\Games\Thesis\TSHistory.cpp">
       <Filter>Source Files\Games\Thesis</Filter>
     </ClCompile>
@@ -803,6 +800,9 @@
     </ClCompile>
     <ClCompile Include="..\Games\Editor Mobile\EMUI.cpp">
       <Filter>Source Files\Games\Editor Mobile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sources\GXCommon\GXAVLTree.cpp">
+      <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

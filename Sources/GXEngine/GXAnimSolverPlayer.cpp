@@ -1,7 +1,7 @@
-//version 1.2
+//version 1.3
 
 #include <GXEngine/GXAnimSolverPlayer.h>
-#include <GXEngine/GXAVLTree.h>
+#include <GXCommon/GXAVLTree.h>
 #include <new>
 
 

@@ -1,10 +1,10 @@
-//version 1.0
+//version 1.1
 
 #ifndef TS_HISTORY
 #define TS_HISTORY
 
 
-#include <GXEngine/GXAVLTree.h>
+#include <GXCommon/GXAVLTree.h>
 
 
 #define TS_HISTORY_LIMIT	6

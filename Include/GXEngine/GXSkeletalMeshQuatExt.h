@@ -1,4 +1,4 @@
-//version 1.0
+//version 1.1
 
 #ifndef GX_SKELETAL_MESH_QUAT_EXT
 #define GX_SKELETAL_MESH_QUAT_EXT

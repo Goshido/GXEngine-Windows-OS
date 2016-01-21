@@ -1,4 +1,4 @@
-//version 1.0
+//version 1.1
 
 #include "TSHistory.h"
 #include <GXCommon/GXStrings.h>

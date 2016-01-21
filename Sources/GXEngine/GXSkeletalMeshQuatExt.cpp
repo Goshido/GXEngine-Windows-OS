@@ -1,7 +1,7 @@
-//version 1.0
+//version 1.1
 
 #include <GXEngine/GXSkeletalMeshQuatExt.h>
-#include <GXEngine/GXAVLTree.h>
+#include <GXCommon/GXAVLTree.h>
 #include <GXCommon/GXStrings.h>
 #include <new>
 

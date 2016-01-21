@@ -1,5 +1,5 @@
 #include <GXEngine/GXLocale.h>
-#include <GXEngine/GXAVLTree.h>
+#include <GXCommon/GXAVLTree.h>
 #include <GXCommon/GXStrings.h>
 #include <GXCommon/GXFileSystem.h>
 #include <GXCommon/GXLogger.h>
