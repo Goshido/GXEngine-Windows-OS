@@ -11,8 +11,16 @@
 class EMMoveTool : public EMTool
 {
 	private:
-		GXMat4			origin;
+		GXVec3			startLocationWorld;
+		GXVec3			deltaWorld;
+		GXFloat			gismoScaleCorrector;
+		GXFloat			axisStartParameter;
 		GXUByte			mode;
+		GXUByte			activeAxis;
+
+		GXBool			isLMBPressed;
+		GXUShort		mouseX;
+		GXUShort		mouseY;
 
 		GXVAOInfo		xAxis;
 		GXVAOInfo		xAxisMask;
@@ -22,8 +30,6 @@ class EMMoveTool : public EMTool
 		GXVAOInfo		zAxisMask;
 		GXVAOInfo		center;
 
-		GXUByte			activeAxis;
-
 		GXShaderInfo	colorShader;
 		GXShaderInfo	maskShader;
 
@@ -32,12 +38,6 @@ class EMMoveTool : public EMTool
 		GLint			msk_mod_view_proj_matLocation;
 
 		GXBool			isDeleted;
-		GXBool			isLMBPressed;
-
-		GXUShort		mouseX;
-		GXUShort		mouseY;
-		GXUShort		mouseBeginX;
-		GXUShort		mouseBeginY;
 
 	public:
 		EMMoveTool ();
@@ -60,6 +60,11 @@ class EMMoveTool : public EMTool
 		GXVoid InitUniforms ();
 
 		GXVoid OnMoveActor ();
+
+		GXFloat GetScaleFactor ( const GXVec3 &deltaWorld );
+		GXVoid GetAxis ( GXVec3& axisView );
+		GXVoid GetRayPerspective ( GXVec3 &rayView );
+		GXFloat GetAxisParameter ( const GXVec3 &axisLocationView, const GXVec3 &axisDirectionView, const GXVec3 &rayView );
 
 		static GXVoid GXCALL OnObject ( GXUInt object );
 		static GXVoid GXCALL OnMouseMove ( GXInt win_x, GXInt win_y );

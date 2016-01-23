@@ -1,4 +1,4 @@
-//version 1.19
+//version 1.21
 
 #include <GXCommon/GXMath.h>
 #include <math.h>
@@ -140,6 +140,20 @@ GXFloat GXCALL GXDistanceVec3Vec3 ( const GXVec3 &a, const GXVec3 &b )
 	GXVec3 diff;
 	GXSubVec3Vec3 ( diff, a, b );
 	return GXLengthVec3 ( diff );
+}
+
+GXVec3* GXCALL GXProjectVec3Vec3 ( GXVec3 &projection, const GXVec3 &vector, const GXVec3 &unitVector )
+{
+	GXVec3 normalVector = vector;
+	GXNormalizeVec3 ( normalVector );
+
+	GXFloat factor = GXLengthVec3 ( vector ) * GXDotVec3Fast ( normalVector, unitVector );
+
+	projection.x = unitVector.x * factor;
+	projection.y = unitVector.y * factor;
+	projection.z = unitVector.z * factor;
+
+	return &projection;
 }
 
 //----------------------------------------------------------------------------------------
@@ -638,6 +652,13 @@ GXVoid GXCALL GXGetOrthoParams ( const GXMat4 &m, GXFloat &width, GXFloat &heigh
 
 	zNear = -( 1.0f + m.m43 ) * factor;
 	zFar = ( 2.0f + zNear * m.m33 ) * factor;
+}
+
+GXVoid GXCALL GXGetRayPerspective ( GXVec3 &rayView, const GXMat4 &proj_mat, const GXVec2 &mouseCVV )
+{
+	rayView.x = mouseCVV.x / proj_mat.m11;
+	rayView.y = mouseCVV.y / proj_mat.m22;
+	rayView.z = 1.0f;
 }
 
 //-------------------------------------------------------------------

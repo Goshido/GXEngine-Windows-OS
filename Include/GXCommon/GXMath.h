@@ -1,4 +1,4 @@
-//version 1.19
+//version 1.21
 
 #ifndef GX_MATH
 #define GX_MATH
@@ -73,6 +73,7 @@ GXFloat GXCALL GXDotVec3Fast ( const GXVec3 &a, const GXVec3 &b );	//Вектора дол
 GXVec3* GXCALL GXCrossVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
 GXFloat GXCALL GXLengthVec3 ( const GXVec3 &v );
 GXFloat GXCALL GXDistanceVec3Vec3 ( const GXVec3 &a, const GXVec3 &b );
+GXVec3* GXCALL GXProjectVec3Vec3 ( GXVec3 &projection, const GXVec3 &vector, const GXVec3 &unitVector );
 
 //-------------------------------------------------------------
 
@@ -185,6 +186,8 @@ GXVec3* GXCALL GXMulVec3Mat4AsPoint ( GXVec3 &out, const GXVec3 &V, const GXMat4
 
 GXVoid GXCALL GXGetPerspectiveParams ( const GXMat4 &m, GXFloat &fovy_rad, GXFloat &aspect, GXFloat &zNear, GXFloat &zFar );
 GXVoid GXCALL GXGetOrthoParams ( const GXMat4 &m, GXFloat &width, GXFloat &height, GXFloat &zNear, GXFloat &zFar );
+
+GXVoid GXCALL GXGetRayPerspective ( GXVec3 &rayView, const GXMat4 &proj_mat, const GXVec2 &mouseCVV );
 
 //-------------------------------------------------------------
 

@@ -19,7 +19,8 @@ EMMoveTool* em_mt_Me;
 EMMoveTool::EMMoveTool ()
 {
 	mode = EM_MOVE_TOOL_WORLD_MODE;
-	GXSetMat4Identity ( origin );
+	memset ( startLocationWorld.v, 0, sizeof ( GXVec3 ) );
+	memset ( deltaWorld.v, 0, sizeof ( GXVec3 ) );
 
 	memset ( &xAxis, 0, sizeof ( GXVAOInfo ) );
 
@@ -28,7 +29,9 @@ EMMoveTool::EMMoveTool ()
 	isDeleted = GX_FALSE;
 	isLMBPressed = GX_FALSE;
 
-	mouseX = mouseY = mouseBeginX = mouseBeginY = 0xFFFF;
+	mouseX = mouseY = 0xFFFF;
+
+	gismoScaleCorrector = 1.0f;
 
 	em_mt_Me = this;
 }
@@ -80,11 +83,10 @@ GXVoid EMMoveTool::SetActor ( EMActor* actor )
 		rot.m14 = rot.m24 = rot.m34 = rot.m41 = rot.m42 = rot.m43 = 0.0f;
 		rot.m44 = 1.0f;
 
-		memcpy ( &origin, &rot, sizeof ( GXMat4 ) );
-		GXSetMat4TranslateTo ( origin, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+		startLocationWorld = actorOrigin.wv;
 	}
 	else
-		GXSetMat4Translation ( origin, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+		startLocationWorld = actorOrigin.wv;
 }
 
 GXVoid EMMoveTool::UnBind ()
@@ -115,9 +117,22 @@ GXVoid EMMoveTool::OnDrawHudColorPass ()
 
 	glUseProgram ( colorShader.uiId );
 
+	GXMat4 rot_mat;
+	GXMat4 scale_mat;
+	GXMat4 mod_mat;
 	GXMat4 mod_view_proj_mat;
-	GXMulMat4Mat4 ( mod_view_proj_mat, origin, gx_ActiveCamera->GetViewProjectionMatrix () );
+
+	const GXMat4& actorOrigin = actor->GetOrigin ();
+	rot_mat = actorOrigin;
+	rot_mat.wv = GXCreateVec3 ( 0.0f, 0.0f, 0.0f );
+	GXSetMat4Scale ( scale_mat, 1.0f, 1.0f, 1.0f );
+	GXMulMat4Mat4 ( mod_mat, rot_mat, scale_mat );
+	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
+
 	glUniformMatrix4fv ( clr_mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
+
+	glDisable ( GL_BLEND );
 
 	if ( activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_X )
 		glUniform4f ( clr_colorLocation, 1.0f, 1.0f, 1.0f, 1.0f );
@@ -144,6 +159,8 @@ GXVoid EMMoveTool::OnDrawHudColorPass ()
 	glBindVertexArray ( center.vao );
 	glDrawArrays ( GL_TRIANGLES, 0, center.numVertices );
 
+	glEnable ( GL_BLEND );
+
 	glBindVertexArray ( 0 );
 	glUseProgram ( 0 );
 }
@@ -154,8 +171,19 @@ GXVoid EMMoveTool::OnDrawHudMaskPass ()
 	
 	glUseProgram ( maskShader.uiId );
 
+	GXMat4 rot_mat;
+	GXMat4 scale_mat;
+	GXMat4 mod_mat;
 	GXMat4 mod_view_proj_mat;
-	GXMulMat4Mat4 ( mod_view_proj_mat, origin, gx_ActiveCamera->GetViewProjectionMatrix () );
+
+	const GXMat4& actorOrigin = actor->GetOrigin ();
+	rot_mat = actorOrigin;
+	rot_mat.wv = GXCreateVec3 ( 0.0f, 0.0f, 0.0f );
+	GXSetMat4Scale ( scale_mat, 1.0f, 1.0f, 1.0f );
+	GXMulMat4Mat4 ( mod_mat, rot_mat, scale_mat );
+	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
+
 	glUniformMatrix4fv ( msk_mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
 
 	em_Renderer->SetObjectMask ( (GXUInt)( &xAxisMask ) );
@@ -223,7 +251,86 @@ GXVoid EMMoveTool::InitUniforms ()
 
 GXVoid EMMoveTool::OnMoveActor ()
 {
-	GXLogW ( L"EMMoveTool::OnMoveActor::Info - Move!\n" );
+	if ( activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
+
+	GXVec3 axisLocationView;
+	GXMulVec3Mat4AsPoint ( axisLocationView, startLocationWorld, gx_ActiveCamera->GetViewMatrix () );
+
+	GXVec3 axisDirectionView;
+	GetAxis ( axisDirectionView );
+
+	GXVec3 rayView;
+	GetRayPerspective ( rayView );
+
+	GXFloat axisParameterDelta = GetAxisParameter ( axisLocationView, axisDirectionView, rayView ) - axisStartParameter;
+
+	GXVec3 deltaView;
+	deltaView.x = axisDirectionView.x * axisParameterDelta;
+	deltaView.y = axisDirectionView.y * axisParameterDelta;
+	deltaView.z = axisDirectionView.z * axisParameterDelta;
+
+	GXMulVec3Mat4AsNormal ( deltaWorld, deltaView, gx_ActiveCamera->GetModelMatrix () );
+	GXMat4 newOrigin = actor->GetOrigin ();
+	GXSumVec3Vec3 ( newOrigin.wv, startLocationWorld, deltaWorld );
+
+	actor->SetOrigin ( newOrigin );
+}
+
+GXFloat EMMoveTool::GetScaleFactor ( const GXVec3 &deltaWorld )
+{
+	//TODO
+	return 1.0f;
+}
+
+GXVoid EMMoveTool::GetAxis ( GXVec3& axisView )
+{
+	GXVec3 axisWorld;
+
+	switch ( activeAxis )
+	{
+		case EM_MOVE_TOOL_ACTIVE_AXIS_X:
+			axisWorld = GXCreateVec3 ( 1.0f, 0.0f, 0.0f );
+		break;
+
+		case EM_MOVE_TOOL_ACTIVE_AXIS_Y:
+			axisWorld = GXCreateVec3 ( 0.0f, 1.0f, 0.0f );
+		break;
+
+		case EM_MOVE_TOOL_ACTIVE_AXIS_Z:
+			axisWorld = GXCreateVec3 ( 0.0f, 0.0f, 1.0f );
+		break;
+
+		default:
+			GXLogW ( L"EMMoveTool::GetAxis::Error - Неизвестная ось\n" );
+			return;
+		break;
+	}
+
+	GXMulVec3Mat4AsNormal ( axisView, axisWorld, gx_ActiveCamera->GetViewMatrix () );
+}
+
+GXVoid EMMoveTool::GetRayPerspective ( GXVec3 &rayView )
+{
+	GXRenderer* renderer = gx_Core->GetRenderer ();
+	const GXMat4& proj_mat = gx_ActiveCamera->GetProjectionMatrix ();
+
+	GXVec2 mouseCVV;
+	mouseCVV.x = ( mouseX / (GXFloat)renderer->GetWidth () ) * 2.0f - 1.0f;
+	mouseCVV.y = ( mouseY / (GXFloat)renderer->GetHeight () ) * 2.0f - 1.0f;
+
+	GXGetRayPerspective ( rayView, proj_mat, mouseCVV );
+}
+
+GXFloat EMMoveTool::GetAxisParameter ( const GXVec3 &axisLocationView, const GXVec3 &axisDirectionView, const GXVec3 &rayView )
+{
+	GXFloat b = axisLocationView.x * rayView.x + axisLocationView.y * rayView.y + axisLocationView.z * rayView.z;
+	GXFloat c = axisDirectionView.x * rayView.x + axisDirectionView.y * rayView.y + axisDirectionView.z * rayView.z;
+	GXFloat d = axisDirectionView.x * axisDirectionView.x + axisDirectionView.y * axisDirectionView.y + axisDirectionView.z * axisDirectionView.z;
+	GXFloat e = axisLocationView.x * axisDirectionView.x + axisLocationView.y * axisDirectionView.y + axisLocationView.z * axisDirectionView.z;
+	GXFloat zeta = ( rayView.x * rayView.x + rayView.y * rayView.y + rayView.z * rayView.z ) * c;
+	GXFloat omega = c * c;
+
+	return ( zeta * e - b * omega ) / ( c * omega - zeta * d );
 }
 
 GXVoid GXCALL EMMoveTool::OnObject ( GXUInt object )
@@ -236,6 +343,27 @@ GXVoid GXCALL EMMoveTool::OnObject ( GXUInt object )
 		em_mt_Me->activeAxis = EM_MOVE_TOOL_ACTIVE_AXIS_Z;
 	else
 		em_mt_Me->activeAxis = EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN;
+
+	if ( em_mt_Me->activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
+
+	if ( em_mt_Me->mode == EM_MOVE_TOOL_WORLD_MODE )
+	{
+		const GXMat4& origin = em_mt_Me->actor->GetOrigin ();
+		em_mt_Me->startLocationWorld = origin.wv;
+	}
+	else
+		memset ( em_mt_Me->startLocationWorld.v, 0, sizeof ( GXVec3 ) );
+
+	GXVec3 axisLocationView;
+	GXMulVec3Mat4AsPoint ( axisLocationView, em_mt_Me->startLocationWorld, gx_ActiveCamera->GetViewMatrix () );
+
+	GXVec3 axisDirectionView;
+	em_mt_Me->GetAxis ( axisDirectionView );
+
+	GXVec3 rayView;
+	em_mt_Me->GetRayPerspective ( rayView );
+
+	em_mt_Me->axisStartParameter = em_mt_Me->GetAxisParameter ( axisLocationView, axisDirectionView, rayView );
 }
 
 GXVoid GXCALL EMMoveTool::OnMouseMove ( GXInt win_x, GXInt win_y )
@@ -252,10 +380,20 @@ GXVoid GXCALL EMMoveTool::OnMouseButton ( EGXInputMouseFlags mouseflags )
 	if ( mouseflags.lmb ) 
 	{
 		em_mt_Me->isLMBPressed = GX_TRUE;
-		em_mt_Me->mouseBeginX = em_mt_Me->mouseX;
-		em_mt_Me->mouseBeginY = em_mt_Me->mouseY;
 		em_Renderer->GetObject ( em_mt_Me->mouseX, em_mt_Me->mouseY );
 	}
 	else
+	{
+		if ( em_mt_Me->activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
+
+		em_mt_Me->startLocationWorld.x += em_mt_Me->deltaWorld.x;
+		em_mt_Me->startLocationWorld.y += em_mt_Me->deltaWorld.y;
+		em_mt_Me->startLocationWorld.z += em_mt_Me->deltaWorld.z;
+
+		GXMat4 newOrigin = em_mt_Me->actor->GetOrigin ();
+		newOrigin.wv = em_mt_Me->startLocationWorld;
+		em_mt_Me->actor->SetOrigin ( newOrigin );
+
 		em_mt_Me->isLMBPressed = GX_FALSE;
+	}
 }

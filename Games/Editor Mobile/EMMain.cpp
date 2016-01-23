@@ -128,12 +128,14 @@ GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 
 	em_Renderer->PresentFrame ();
 	
-	GXMat4 r;
+	/*GXMat4 r;
 	GXSetMat4RotationXYZ ( r, 2.0f * em_Angle, 1.5f * em_Angle, 4.0f * em_Angle );
 
 	em_UnitActor->SetOrigin ( r );
-	
+	*/
 	em_Angle += deltatime * 0.5f;
+
+	//em_SceneCamera->SetRotation ( GXDegToRad ( 0.0f ), em_Angle, 0.0f );
 	
 	return GX_TRUE;
 }
@@ -148,7 +150,11 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 
 	em_HudCamera = new GXCameraOrthographic ( w, h, 0.0f, 100.0f );
 	em_SceneCamera = new GXCameraPerspective ( GXDegToRad ( 60.0f ), w / h, 0.1f, 1000.0f );
-	em_SceneCamera->SetLocation ( 0.0f, 0.0f, -10.0f );
+	//em_SceneCamera->SetLocation ( 0.0f, 0.0f, -10.0f );
+	//em_SceneCamera->SetRotation ( 0.0f, 0.0f, GX_MATH_PI );
+
+	em_SceneCamera->SetLocation ( -4.0f, 6.0f, -2.0f );
+	em_SceneCamera->SetRotation ( GXDegToRad ( 60.0f ), GXDegToRad ( 60.0f ), 0.0f );
 
 	GXLocale* locale = gx_Core->GetLocale ();
 	locale->SetLanguage ( GX_LANGUAGE_RU );
@@ -202,9 +208,10 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 
 	GXMat4 origin;
 	GXSetMat4Identity ( origin );
-	em_DirectedLight = new EMDirectedLightActor ( L"Directed light 01", origin );
-
 	em_UnitActor = new EMUnitActor ( L"Unit actor 01", origin );
+
+	GXSetMat4RotationXY ( origin, GXDegToRad ( 30.0f ), GXDegToRad ( 30.0f ) );
+	em_DirectedLight = new EMDirectedLightActor ( L"Directed light 01", origin );
 
 	em_MoveTool = new EMMoveTool ();
 	em_MoveTool->Bind ();
