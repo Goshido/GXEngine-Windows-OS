@@ -207,6 +207,7 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 	em_Menu->SetLocation ( 0.0f, h - gx_ui_Scale * 0.5f );
 
 	GXMat4 origin;
+	//GXSetMat4RotationXY ( origin, GXDegToRad ( 20.0f ), GXDegToRad ( 40.0f ) );
 	GXSetMat4Identity ( origin );
 	em_UnitActor = new EMUnitActor ( L"Unit actor 01", origin );
 
@@ -216,6 +217,7 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 	em_MoveTool = new EMMoveTool ();
 	em_MoveTool->Bind ();
 	em_MoveTool->SetActor ( em_UnitActor );
+	em_MoveTool->SetLocalMode ();
 
 	ShowCursor ( 1 );
 }

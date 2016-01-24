@@ -12,6 +12,7 @@ class EMMoveTool : public EMTool
 {
 	private:
 		GXVec3			startLocationWorld;
+		GXMat4			gismoRotation;
 		GXVec3			deltaWorld;
 		GXFloat			gismoScaleCorrector;
 		GXFloat			axisStartParameter;
@@ -59,12 +60,14 @@ class EMMoveTool : public EMTool
 		GXVoid Load3DModels ();
 		GXVoid InitUniforms ();
 
+		GXVoid SetMode ( GXUByte mode );
+
 		GXVoid OnMoveActor ();
 
-		GXFloat GetScaleFactor ( const GXVec3 &deltaWorld );
 		GXVoid GetAxis ( GXVec3& axisView );
 		GXVoid GetRayPerspective ( GXVec3 &rayView );
 		GXFloat GetAxisParameter ( const GXVec3 &axisLocationView, const GXVec3 &axisDirectionView, const GXVec3 &rayView );
+		GXFloat GetScaleCorrector ( const GXVec3 &axisLocationView, const GXVec3 &deltaView );
 
 		static GXVoid GXCALL OnObject ( GXUInt object );
 		static GXVoid GXCALL OnMouseMove ( GXInt win_x, GXInt win_y );

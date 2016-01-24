@@ -207,27 +207,8 @@ GXVoid EMUnitActor::OnOriginChanged ()
 {
 	mesh->SetLocation ( origin.wv );
 
-	GXVec3 scaleFactor;
-	scaleFactor.x = 1.0f / GXLengthVec3 ( origin.xv );
-	scaleFactor.y = 1.0f / GXLengthVec3 ( origin.yv );
-	scaleFactor.z = 1.0f / GXLengthVec3 ( origin.zv );
-
 	GXMat4 cleanRotation;
-	cleanRotation.m14 = cleanRotation.m24 = cleanRotation.m34 = 0.0f;
-	cleanRotation.m41 = cleanRotation.m42 = cleanRotation.m43 = 0.0f;
-	cleanRotation.m44 = 1.0f;
-
-	cleanRotation.m11 = origin.m11 * scaleFactor.x;
-	cleanRotation.m12 = origin.m12 * scaleFactor.x;
-	cleanRotation.m13 = origin.m13 * scaleFactor.x;
-
-	cleanRotation.m21 = origin.m21 * scaleFactor.y;
-	cleanRotation.m22 = origin.m22 * scaleFactor.y;
-	cleanRotation.m23 = origin.m23 * scaleFactor.y;
-
-	cleanRotation.m31 = origin.m31 * scaleFactor.z;
-	cleanRotation.m32 = origin.m32 * scaleFactor.z;
-	cleanRotation.m33 = origin.m33 * scaleFactor.z;
+	GXSetMat4ClearRotation ( cleanRotation, origin );
 
 	mesh->SetRotation ( cleanRotation );
 }

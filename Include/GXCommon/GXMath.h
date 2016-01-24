@@ -27,7 +27,7 @@ union GXVec2
 };
 
 GXVec2 GXCALL GXCreateVec2 ( GXFloat component_1, GXFloat component_2 );
-GXVec2* GXCALL GXSubVec2Vec2 ( GXVec2 &out, const GXVec2 &a, const GXVec2 &b );
+GXVoid GXCALL GXSubVec2Vec2 ( GXVec2 &out, const GXVec2 &a, const GXVec2 &b );
 
 //-------------------------------------------------------------
 
@@ -65,15 +65,16 @@ struct GXVec3
 };
 
 GXVec3 GXCALL GXCreateVec3 ( GXFloat component_1, GXFloat component_2, GXFloat component_3 );
-GXVec3* GXCALL GXNormalizeVec3 ( GXVec3 &inOut );
-GXVec3* GXCALL GXSumVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
-GXVec3* GXCALL GXSubVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
-GXVec3* GXCALL GXMulVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
+GXVoid GXCALL GXNormalizeVec3 ( GXVec3 &inOut );
+GXVoid GXCALL GXSumVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
+GXVoid GXCALL GXSubVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
+GXVoid GXCALL GXMulVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
+GXVoid GXCALL GXMulVec3Scalar ( GXVec3 &out, const GXVec3 &v, GXFloat factor );
 GXFloat GXCALL GXDotVec3Fast ( const GXVec3 &a, const GXVec3 &b );	//Вектора должны быль единичными
-GXVec3* GXCALL GXCrossVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
+GXVoid GXCALL GXCrossVec3Vec3 ( GXVec3 &out, const GXVec3 &a, const GXVec3 &b );
 GXFloat GXCALL GXLengthVec3 ( const GXVec3 &v );
 GXFloat GXCALL GXDistanceVec3Vec3 ( const GXVec3 &a, const GXVec3 &b );
-GXVec3* GXCALL GXProjectVec3Vec3 ( GXVec3 &projection, const GXVec3 &vector, const GXVec3 &unitVector );
+GXVoid GXCALL GXProjectVec3Vec3 ( GXVec3 &projection, const GXVec3 &vector, const GXVec3 &unitVector );
 
 //-------------------------------------------------------------
 
@@ -118,19 +119,19 @@ typedef GXVec4 GXQuat;
 GXQuat GXCALL GXCreateQuat ( const GXMat4 &mat );
 
 GXVoid GXCALL GXSetQuatIdentity ( GXQuat &out );
-GXQuat* GXCALL GXSetQuatRotationAxis ( GXQuat &out, GXFloat x, GXFloat y, GXFloat z, GXFloat angle );
-GXQuat* GXCALL GXSetQuatRotationAxis ( GXQuat &out, const GXVec3 &axis, GXFloat angle );
+GXVoid GXCALL GXSetQuatRotationAxis ( GXQuat &out, GXFloat x, GXFloat y, GXFloat z, GXFloat angle );
+GXVoid GXCALL GXSetQuatRotationAxis ( GXQuat &out, const GXVec3 &axis, GXFloat angle );
 
-GXQuat* GXCALL GXQuatRehandCoordinateSystem ( GXQuat &out, const GXQuat &src );
-GXVec3* GXCALL GXQuatToEulerAngles ( GXVec3 &out_rad, const GXQuat &q );	//TODO
+GXVoid GXCALL GXQuatRehandCoordinateSystem ( GXQuat &out, const GXQuat &src );
+GXVoid GXCALL GXQuatToEulerAngles ( GXVec3 &out_rad, const GXQuat &q );	//TODO
 
-GXQuat* GXCALL GXMulQuatQuat ( GXQuat& out, const GXQuat &a, const GXQuat &b );
-GXQuat* GXCALL GXSumQuatQuat ( GXQuat& out, const GXQuat &a, const GXQuat &b );
-GXQuat* GXCALL GXSubQuatQuat ( GXQuat &out, const GXQuat &a, const GXQuat &b );
-GXQuat* GXCALL GXQuatSLerp ( GXQuat &out, const GXQuat &a, const GXQuat &b, GXFloat k );
-GXQuat* GXCALL GXInverseQuat ( GXQuat &out, const GXQuat &q );
-GXQuat* GXCALL GXNormalizeQuat ( GXQuat &out, GXQuat &q );
-GXVec3* GXCALL GXQuatTransform ( GXVec3 &out, const GXQuat &q, const GXVec3 &v );
+GXVoid GXCALL GXMulQuatQuat ( GXQuat& out, const GXQuat &a, const GXQuat &b );
+GXVoid GXCALL GXSumQuatQuat ( GXQuat& out, const GXQuat &a, const GXQuat &b );
+GXVoid GXCALL GXSubQuatQuat ( GXQuat &out, const GXQuat &a, const GXQuat &b );
+GXVoid GXCALL GXQuatSLerp ( GXQuat &out, const GXQuat &a, const GXQuat &b, GXFloat k );
+GXVoid GXCALL GXInverseQuat ( GXQuat &out, const GXQuat &q );
+GXVoid GXCALL GXNormalizeQuat ( GXQuat &out, GXQuat &q );
+GXVoid GXCALL GXQuatTransform ( GXVec3 &out, const GXQuat &q, const GXVec3 &v );
 
 //-------------------------------------------------------------
 
@@ -164,25 +165,26 @@ struct GXMat4
 	const GXMat4 &From ( const GXQuat &quat, const GXVec3 &origin );
 };
 
-GXMat4* GXCALL GXSetMat4Identity ( GXMat4 &M );
-GXMat4* GXCALL GXSetMat4Perspective ( GXMat4 &out, GXFloat fovy_rad, GXFloat aspect, GXFloat znear, GXFloat zfar );
-GXMat4* GXCALL GXSetMat4Ortho ( GXMat4 &out, GXFloat width, GXFloat height, GXFloat znear, GXFloat zfar );
-GXMat4* GXCALL GXSetMat4Translation ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
-GXMat4* GXCALL GXSetMat4TranslateTo ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
-GXMat4* GXCALL GXSetMat4TranslateTo ( GXMat4 &out, const GXVec3 &location );
-GXMat4* GXCALL GXSetMat4RotationX ( GXMat4 &out, GXFloat angle );
-GXMat4* GXCALL GXSetMat4RotationY ( GXMat4 &out, GXFloat angle );
-GXMat4* GXCALL GXSetMat4RotationZ ( GXMat4 &out, GXFloat angle );
-GXMat4* GXCALL GXSetMat4RotationXY ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad );
-GXMat4* GXCALL GXSetMat4RotationXYZ ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad, GXFloat roll_rad );
-GXMat4* GXCALL GXSetMat4RotationRelative ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad, GXFloat roll_rad, GXFloat angle );
-GXMat4* GXCALL GXSetMat4Scale ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
-GXMat4* GXCALL GXSetMat4Inverse ( GXMat4& out, const GXMat4& src );
+GXVoid GXCALL GXSetMat4Identity ( GXMat4 &M );
+GXVoid GXCALL GXSetMat4Perspective ( GXMat4 &out, GXFloat fovy_rad, GXFloat aspect, GXFloat znear, GXFloat zfar );
+GXVoid GXCALL GXSetMat4Ortho ( GXMat4 &out, GXFloat width, GXFloat height, GXFloat znear, GXFloat zfar );
+GXVoid GXCALL GXSetMat4Translation ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
+GXVoid GXCALL GXSetMat4TranslateTo ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
+GXVoid GXCALL GXSetMat4TranslateTo ( GXMat4 &out, const GXVec3 &location );
+GXVoid GXCALL GXSetMat4RotationX ( GXMat4 &out, GXFloat angle );
+GXVoid GXCALL GXSetMat4RotationY ( GXMat4 &out, GXFloat angle );
+GXVoid GXCALL GXSetMat4RotationZ ( GXMat4 &out, GXFloat angle );
+GXVoid GXCALL GXSetMat4RotationXY ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad );
+GXVoid GXCALL GXSetMat4RotationXYZ ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad, GXFloat roll_rad );
+GXVoid GXCALL GXSetMat4RotationRelative ( GXMat4 &out, GXFloat pitch_rad, GXFloat yaw_rad, GXFloat roll_rad, GXFloat angle );
+GXVoid GXCALL GXSetMat4ClearRotation ( GXMat4 &out, const GXMat4 &mod_mat );
+GXVoid GXCALL GXSetMat4Scale ( GXMat4 &out, GXFloat x, GXFloat y, GXFloat z );
+GXVoid GXCALL GXSetMat4Inverse ( GXMat4& out, const GXMat4& src );
 
-GXMat4* GXCALL GXMulMat4Mat4 ( GXMat4& out, const GXMat4& a, const GXMat4& b );
-GXVec4* GXCALL GXMulVec4Mat4 ( GXVec4 &out, const GXVec4 &V, const GXMat4 &M );
-GXVec3* GXCALL GXMulVec3Mat4AsNormal ( GXVec3 &out, const GXVec3 &V, const GXMat4 &M );
-GXVec3* GXCALL GXMulVec3Mat4AsPoint ( GXVec3 &out, const GXVec3 &V, const GXMat4 &M );
+GXVoid GXCALL GXMulMat4Mat4 ( GXMat4& out, const GXMat4& a, const GXMat4& b );
+GXVoid GXCALL GXMulVec4Mat4 ( GXVec4 &out, const GXVec4 &V, const GXMat4 &M );
+GXVoid GXCALL GXMulVec3Mat4AsNormal ( GXVec3 &out, const GXVec3 &V, const GXMat4 &M );
+GXVoid GXCALL GXMulVec3Mat4AsPoint ( GXVec3 &out, const GXVec3 &V, const GXMat4 &M );
 
 GXVoid GXCALL GXGetPerspectiveParams ( const GXMat4 &m, GXFloat &fovy_rad, GXFloat &aspect, GXFloat &zNear, GXFloat &zFar );
 GXVoid GXCALL GXGetOrthoParams ( const GXMat4 &m, GXFloat &width, GXFloat &height, GXFloat &zNear, GXFloat &zFar );
@@ -200,7 +202,7 @@ struct GXMat3
 	GXVoid operator = ( GXMat3& M );
 };
 
-GXMat3* GXCALL GXTransponseMat3 ( GXMat3& out, GXMat3& a );
+GXVoid GXCALL GXTransponseMat3 ( GXMat3& out, GXMat3& a );
 
 //-------------------------------------------------------------
 

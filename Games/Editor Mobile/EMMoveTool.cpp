@@ -12,15 +12,18 @@
 #define EM_MOVE_TOOL_ACTIVE_AXIS_X			0
 #define EM_MOVE_TOOL_ACTIVE_AXIS_Y			1
 #define EM_MOVE_TOOL_ACTIVE_AXIS_Z			2
+#define EM_MOVE_TOOL_GISMO_SIZE_FACTOR		0.14f
 
 
 EMMoveTool* em_mt_Me;
 
 EMMoveTool::EMMoveTool ()
 {
-	mode = EM_MOVE_TOOL_WORLD_MODE;
+	mode = EM_MOVE_TOOL_LOCAL_MODE;
+
 	memset ( startLocationWorld.v, 0, sizeof ( GXVec3 ) );
 	memset ( deltaWorld.v, 0, sizeof ( GXVec3 ) );
+	GXSetMat4Identity ( gismoRotation );
 
 	memset ( &xAxis, 0, sizeof ( GXVAOInfo ) );
 
@@ -58,35 +61,16 @@ GXVoid EMMoveTool::SetActor ( EMActor* actor )
 {
 	this->actor = actor;
 
-	const GXMat4& actorOrigin = actor->GetOrigin ();
-	GXMat4 rot;
-
-	if ( mode == EM_MOVE_TOOL_LOCAL_MODE )
+	switch ( mode )
 	{
-		GXVec3 scaleFactor;
-		scaleFactor.x = 1.0f / GXLengthVec3 ( actorOrigin.xv );
-		scaleFactor.y = 1.0f / GXLengthVec3 ( actorOrigin.yv );
-		scaleFactor.z = 1.0f / GXLengthVec3 ( actorOrigin.zv );
+		case EM_MOVE_TOOL_LOCAL_MODE:
+			SetLocalMode ();
+		break;
 
-		rot.m11 = actorOrigin.m11 * scaleFactor.x;
-		rot.m12 = actorOrigin.m12 * scaleFactor.x;
-		rot.m13 = actorOrigin.m13 * scaleFactor.x;
-
-		rot.m21 = actorOrigin.m21 * scaleFactor.y;
-		rot.m22 = actorOrigin.m22 * scaleFactor.y;
-		rot.m23 = actorOrigin.m23 * scaleFactor.y;
-
-		rot.m31 = actorOrigin.m31 * scaleFactor.z;
-		rot.m32 = actorOrigin.m32 * scaleFactor.z;
-		rot.m33 = actorOrigin.m33 * scaleFactor.z;
-
-		rot.m14 = rot.m24 = rot.m34 = rot.m41 = rot.m42 = rot.m43 = 0.0f;
-		rot.m44 = 1.0f;
-
-		startLocationWorld = actorOrigin.wv;
+		case EM_MOVE_TOOL_WORLD_MODE:
+			SetWorldMode ();
+		break;
 	}
-	else
-		startLocationWorld = actorOrigin.wv;
 }
 
 GXVoid EMMoveTool::UnBind ()
@@ -123,10 +107,8 @@ GXVoid EMMoveTool::OnDrawHudColorPass ()
 	GXMat4 mod_view_proj_mat;
 
 	const GXMat4& actorOrigin = actor->GetOrigin ();
-	rot_mat = actorOrigin;
-	rot_mat.wv = GXCreateVec3 ( 0.0f, 0.0f, 0.0f );
-	GXSetMat4Scale ( scale_mat, 1.0f, 1.0f, 1.0f );
-	GXMulMat4Mat4 ( mod_mat, rot_mat, scale_mat );
+	GXSetMat4Scale ( scale_mat, gismoScaleCorrector, gismoScaleCorrector, gismoScaleCorrector );
+	GXMulMat4Mat4 ( mod_mat, gismoRotation, scale_mat );
 	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
 	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
 
@@ -167,7 +149,7 @@ GXVoid EMMoveTool::OnDrawHudColorPass ()
 
 GXVoid EMMoveTool::OnDrawHudMaskPass ()
 {
-	if ( !actor ) return;
+	if ( !actor || isDeleted ) return;
 	
 	glUseProgram ( maskShader.uiId );
 
@@ -177,10 +159,8 @@ GXVoid EMMoveTool::OnDrawHudMaskPass ()
 	GXMat4 mod_view_proj_mat;
 
 	const GXMat4& actorOrigin = actor->GetOrigin ();
-	rot_mat = actorOrigin;
-	rot_mat.wv = GXCreateVec3 ( 0.0f, 0.0f, 0.0f );
-	GXSetMat4Scale ( scale_mat, 1.0f, 1.0f, 1.0f );
-	GXMulMat4Mat4 ( mod_mat, rot_mat, scale_mat );
+	GXSetMat4Scale ( scale_mat, gismoScaleCorrector, gismoScaleCorrector, gismoScaleCorrector );
+	GXMulMat4Mat4 ( mod_mat, gismoRotation, scale_mat );
 	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
 	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
 
@@ -204,12 +184,14 @@ GXVoid EMMoveTool::OnDrawHudMaskPass ()
 
 GXVoid EMMoveTool::SetLocalMode ()
 {
-	mode = EM_MOVE_TOOL_LOCAL_MODE;
+	if ( !actor ) return;
+	SetMode ( EM_MOVE_TOOL_LOCAL_MODE );
 }
 
 GXVoid EMMoveTool::SetWorldMode ()
 {
-	mode = EM_MOVE_TOOL_WORLD_MODE;
+	if ( !actor ) return;
+	SetMode ( EM_MOVE_TOOL_WORLD_MODE );
 }
 
 EMMoveTool::~EMMoveTool ()
@@ -249,6 +231,41 @@ GXVoid EMMoveTool::InitUniforms ()
 	msk_mod_view_proj_matLocation = GXGetUniformLocation ( maskShader.uiId, "mod_view_proj_mat" );
 }
 
+GXVoid EMMoveTool::SetMode ( GXUByte mode )
+{
+	this->mode = mode;
+	if ( !gx_ActiveCamera ) return;
+
+	const GXMat4& actorOrigin = actor->GetOrigin ();
+	startLocationWorld = actorOrigin.wv;
+	memset ( &deltaWorld, 0, sizeof ( GXVec3 ) );
+
+	switch ( mode )
+	{
+		case EM_MOVE_TOOL_LOCAL_MODE:
+			GXSetMat4ClearRotation ( gismoRotation, actorOrigin );
+		break;
+
+		case EM_MOVE_TOOL_WORLD_MODE:
+			GXSetMat4Identity ( gismoRotation );
+		break;
+	}
+
+	GXVec3 axisLocationView;
+	GXMulVec3Mat4AsPoint ( axisLocationView, startLocationWorld, gx_ActiveCamera->GetViewMatrix () );
+
+	GXVec3 axisDirectionView;
+	GetAxis ( axisDirectionView );
+
+	GXVec3 rayView;
+	GetRayPerspective ( rayView );
+
+	axisStartParameter = GetAxisParameter ( axisLocationView, axisDirectionView, rayView );
+
+	GXVec3 deltaView ( 0.0f, 0.0f, 0.0f );
+	gismoScaleCorrector = GetScaleCorrector ( axisLocationView, deltaView );
+}
+
 GXVoid EMMoveTool::OnMoveActor ()
 {
 	if ( activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
@@ -265,21 +282,15 @@ GXVoid EMMoveTool::OnMoveActor ()
 	GXFloat axisParameterDelta = GetAxisParameter ( axisLocationView, axisDirectionView, rayView ) - axisStartParameter;
 
 	GXVec3 deltaView;
-	deltaView.x = axisDirectionView.x * axisParameterDelta;
-	deltaView.y = axisDirectionView.y * axisParameterDelta;
-	deltaView.z = axisDirectionView.z * axisParameterDelta;
+	GXMulVec3Scalar ( deltaView, axisDirectionView, axisParameterDelta );
+
+	gismoScaleCorrector = GetScaleCorrector ( axisLocationView, deltaView );
 
 	GXMulVec3Mat4AsNormal ( deltaWorld, deltaView, gx_ActiveCamera->GetModelMatrix () );
 	GXMat4 newOrigin = actor->GetOrigin ();
 	GXSumVec3Vec3 ( newOrigin.wv, startLocationWorld, deltaWorld );
 
 	actor->SetOrigin ( newOrigin );
-}
-
-GXFloat EMMoveTool::GetScaleFactor ( const GXVec3 &deltaWorld )
-{
-	//TODO
-	return 1.0f;
 }
 
 GXVoid EMMoveTool::GetAxis ( GXVec3& axisView )
@@ -289,15 +300,15 @@ GXVoid EMMoveTool::GetAxis ( GXVec3& axisView )
 	switch ( activeAxis )
 	{
 		case EM_MOVE_TOOL_ACTIVE_AXIS_X:
-			axisWorld = GXCreateVec3 ( 1.0f, 0.0f, 0.0f );
+			axisWorld = ( mode == EM_MOVE_TOOL_WORLD_MODE ) ? GXCreateVec3 ( 1.0f, 0.0f, 0.0f ) : gismoRotation.xv;
 		break;
 
 		case EM_MOVE_TOOL_ACTIVE_AXIS_Y:
-			axisWorld = GXCreateVec3 ( 0.0f, 1.0f, 0.0f );
+			axisWorld = ( mode == EM_MOVE_TOOL_WORLD_MODE ) ? GXCreateVec3 ( 0.0f, 1.0f, 0.0f ) : gismoRotation.yv;
 		break;
 
 		case EM_MOVE_TOOL_ACTIVE_AXIS_Z:
-			axisWorld = GXCreateVec3 ( 0.0f, 0.0f, 1.0f );
+			axisWorld = ( mode == EM_MOVE_TOOL_WORLD_MODE ) ? GXCreateVec3 ( 0.0f, 0.0f, 1.0f ) : gismoRotation.zv;
 		break;
 
 		default:
@@ -333,6 +344,11 @@ GXFloat EMMoveTool::GetAxisParameter ( const GXVec3 &axisLocationView, const GXV
 	return ( zeta * e - b * omega ) / ( c * omega - zeta * d );
 }
 
+GXFloat EMMoveTool::GetScaleCorrector ( const GXVec3 &axisLocationView, const GXVec3 &deltaView )
+{
+	return ( axisLocationView.z + deltaView.z ) * EM_MOVE_TOOL_GISMO_SIZE_FACTOR;
+}
+
 GXVoid GXCALL EMMoveTool::OnObject ( GXUInt object )
 {
 	if ( object == (GXUInt)( &em_mt_Me->xAxisMask ) )
@@ -346,24 +362,16 @@ GXVoid GXCALL EMMoveTool::OnObject ( GXUInt object )
 
 	if ( em_mt_Me->activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
 
-	if ( em_mt_Me->mode == EM_MOVE_TOOL_WORLD_MODE )
+	switch ( em_mt_Me->mode )
 	{
-		const GXMat4& origin = em_mt_Me->actor->GetOrigin ();
-		em_mt_Me->startLocationWorld = origin.wv;
+		case EM_MOVE_TOOL_WORLD_MODE:
+			em_mt_Me->SetWorldMode ();
+		break;
+
+		case EM_MOVE_TOOL_LOCAL_MODE:
+			em_mt_Me->SetLocalMode ();
+		break;
 	}
-	else
-		memset ( em_mt_Me->startLocationWorld.v, 0, sizeof ( GXVec3 ) );
-
-	GXVec3 axisLocationView;
-	GXMulVec3Mat4AsPoint ( axisLocationView, em_mt_Me->startLocationWorld, gx_ActiveCamera->GetViewMatrix () );
-
-	GXVec3 axisDirectionView;
-	em_mt_Me->GetAxis ( axisDirectionView );
-
-	GXVec3 rayView;
-	em_mt_Me->GetRayPerspective ( rayView );
-
-	em_mt_Me->axisStartParameter = em_mt_Me->GetAxisParameter ( axisLocationView, axisDirectionView, rayView );
 }
 
 GXVoid GXCALL EMMoveTool::OnMouseMove ( GXInt win_x, GXInt win_y )
@@ -386,9 +394,7 @@ GXVoid GXCALL EMMoveTool::OnMouseButton ( EGXInputMouseFlags mouseflags )
 	{
 		if ( em_mt_Me->activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
 
-		em_mt_Me->startLocationWorld.x += em_mt_Me->deltaWorld.x;
-		em_mt_Me->startLocationWorld.y += em_mt_Me->deltaWorld.y;
-		em_mt_Me->startLocationWorld.z += em_mt_Me->deltaWorld.z;
+		GXSumVec3Vec3 ( em_mt_Me->startLocationWorld, em_mt_Me->startLocationWorld, em_mt_Me->deltaWorld );
 
 		GXMat4 newOrigin = em_mt_Me->actor->GetOrigin ();
 		newOrigin.wv = em_mt_Me->startLocationWorld;
