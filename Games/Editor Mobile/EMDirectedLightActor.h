@@ -15,7 +15,7 @@ class EMDirectedLightActor : EMActor
 		EMDirectedLight*	light;
 
 	public:
-		EMDirectedLightActor ( const GXWChar* name, const GXMat4 &origin );
+		EMDirectedLightActor ( const GXWChar* name, const GXMat4 &transform );
 		virtual ~EMDirectedLightActor ();
 
 		virtual GXVoid OnDrawHudDepthIndependentPass ();

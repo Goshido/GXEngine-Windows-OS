@@ -9,5 +9,4 @@ GXVoid GXCALL EMOnInit ();
 GXVoid GXCALL EMOnClose ();
 
 
-
 #endif //EM_MAIN

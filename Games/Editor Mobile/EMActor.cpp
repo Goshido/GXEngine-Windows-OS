@@ -5,11 +5,11 @@
 EMActor* em_Actors = 0;
 
 
-EMActor::EMActor ( const GXWChar* name, GXUInt type, const GXMat4 &origin )
+EMActor::EMActor ( const GXWChar* name, GXUInt type, const GXMat4 &transform )
 {
 	GXWcsclone ( &this->name, name );
 	this->type = type;
-	memcpy ( &this->origin, &origin, sizeof ( GXMat4 ) );
+	memcpy ( &this->transform, &transform, sizeof ( GXMat4 ) );
 
 	isVisible = GX_TRUE;
 
@@ -67,7 +67,7 @@ GXUInt EMActor::OnRequeredSaveSize ()
 	return 0;
 }
 
-GXVoid EMActor::OnOriginChanged ()
+GXVoid EMActor::OnTransformChanged ()
 {
 	//NOTHING
 }
@@ -82,15 +82,15 @@ GXUInt EMActor::GetType ()
 	return type;
 }
 
-const GXMat4& EMActor::GetOrigin ()
+const GXMat4& EMActor::GetTransform ()
 {
-	return origin;
+	return transform;
 }
 
-GXVoid EMActor::SetOrigin ( const GXMat4 &origin )
+GXVoid EMActor::SetTransform ( const GXMat4 &transfrom )
 {
-	memcpy ( &this->origin, &origin, sizeof ( GXMat4 ) );
-	OnOriginChanged ();
+	memcpy ( &this->transform, &transfrom, sizeof ( GXMat4 ) );
+	OnTransformChanged ();
 }
 
 GXVoid EMActor::Show ()

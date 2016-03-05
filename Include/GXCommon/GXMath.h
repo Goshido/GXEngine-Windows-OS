@@ -1,4 +1,4 @@
-//version 1.21
+//version 1.22
 
 #ifndef GX_MATH
 #define GX_MATH
@@ -272,6 +272,8 @@ GXVoid GXCALL GXColorToVec4 ( GXVec4 &out, GXUChar r, GXUChar g, GXUChar b, GXUC
 GXVoid GXCALL GXConvert3DSMaxToGXEngine ( GXVec3 &gx_out, GXFloat max_x, GXFloat max_y, GXFloat max_z );
 GXFloat GXCALL GXRandomNormalize ();
 GXVoid GXCALL GXGetTangentBitangent ( GXVec3 &outTangent, GXVec3 &outBitangent, GXUByte vertexID, const GXUByte* vertices, GXUInt vertexStride, const GXUByte* uvs, GXUInt uvStride );
+
+GXFloat GXCALL GXClamp ( GXFloat value, GXFloat minValue, GXFloat maxValue );
 
 
 #endif //GX_MATH

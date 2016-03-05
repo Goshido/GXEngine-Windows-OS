@@ -31,6 +31,11 @@ GXVoid EMTool::UnBind ()
 	em_Tool = 0;
 }
 
+GXVoid EMTool::OnViewerTransformChanged ()
+{
+	//NOTHING
+}
+
 GXVoid EMTool::OnDrawCommonPass ()
 {
 	//NOTHING
@@ -42,6 +47,21 @@ GXVoid EMTool::OnDrawHudColorPass ()
 }
 
 GXVoid EMTool::OnDrawHudMaskPass ()
+{
+	//NOTHING
+}
+
+GXVoid EMTool::OnMouseMove ( const GXVec2 &mousePosition )
+{
+	//NOTHING
+}
+
+GXVoid EMTool::OnMouseButton ( EGXInputMouseFlags mouseflags )
+{
+	//NOTHING
+}
+
+GXVoid EMTool::OnMouseWheel ( GXInt steps )
 {
 	//NOTHING
 }

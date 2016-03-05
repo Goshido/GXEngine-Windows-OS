@@ -1,4 +1,4 @@
-//version 1.21
+//version 1.22
 
 #include <GXCommon/GXMath.h>
 #include <math.h>
@@ -1260,4 +1260,9 @@ GXVoid GXCALL GXGetTangentBitangent ( GXVec3 &outTangent, GXVec3 &outBitangent, 
 	outBitangent.y = factor * ( -dUVb.u * a.y + dUVa.u * b.y );
 	outBitangent.z = factor * ( -dUVb.u * a.z + dUVa.u * b.z );
 	GXNormalizeVec3 ( outBitangent );
+}
+
+GXFloat GXCALL GXClamp ( GXFloat value, GXFloat minValue, GXFloat maxValue )
+{
+	return ( value < minValue ) ? minValue : ( value > maxValue ) ? maxValue : value;
 }

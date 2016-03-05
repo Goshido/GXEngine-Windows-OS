@@ -108,6 +108,7 @@
     <ClCompile Include="..\Games\Editor Mobile\EMUIButton.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMUIMenu.cpp" />
     <ClCompile Include="..\Games\Editor Mobile\EMUnitActor.cpp" />
+    <ClCompile Include="..\Games\Editor Mobile\EMViewer.cpp" />
     <ClCompile Include="..\Games\MLP Ultimate\GXGameMLPUltimate.cpp" />
     <ClCompile Include="..\Games\Test\GXBossAppleJack.cpp" />
     <ClCompile Include="..\Games\Test\GXBossRainbowDash.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="..\Games\Editor Mobile\EMUIButton.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMUIMenu.h" />
     <ClInclude Include="..\Games\Editor Mobile\EMUnitActor.h" />
+    <ClInclude Include="..\Games\Editor Mobile\EMViewer.h" />
     <ClInclude Include="..\Games\MLP Ultimate\GXGameMLPUltimate.h" />
     <ClInclude Include="..\Games\Test\GXBossAppleJack.h" />
     <ClInclude Include="..\Games\Test\GXBossRainbowDash.h" />

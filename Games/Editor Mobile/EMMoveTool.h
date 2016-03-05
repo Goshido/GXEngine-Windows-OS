@@ -48,15 +48,21 @@ class EMMoveTool : public EMTool
 		virtual GXVoid SetActor ( EMActor* actor );
 		virtual GXVoid UnBind ();
 
+		virtual GXVoid OnViewerTransformChanged ();
+
 		virtual GXVoid OnDrawHudColorPass ();
 		virtual GXVoid OnDrawHudMaskPass ();
+
+		virtual GXVoid OnMouseMove ( const GXVec2 &mousePosition );
+		virtual GXVoid OnMouseButton ( EGXInputMouseFlags mouseflags );
 
 		GXVoid SetLocalMode ();
 		GXVoid SetWorldMode ();
 
-	private:
+	protected:
 		virtual ~EMMoveTool ();
 
+	private:
 		GXVoid Load3DModels ();
 		GXVoid InitUniforms ();
 
@@ -70,8 +76,6 @@ class EMMoveTool : public EMTool
 		GXFloat GetScaleCorrector ( const GXVec3 &axisLocationView, const GXVec3 &deltaView );
 
 		static GXVoid GXCALL OnObject ( GXUInt object );
-		static GXVoid GXCALL OnMouseMove ( GXInt win_x, GXInt win_y );
-		static GXVoid GXCALL OnMouseButton ( EGXInputMouseFlags mouseflags );
 };
 
 

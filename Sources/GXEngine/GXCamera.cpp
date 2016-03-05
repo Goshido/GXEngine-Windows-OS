@@ -1,4 +1,4 @@
-//version 1.7
+//version 1.8
 
 #include <GXEngine/GXCamera.h>
 
@@ -101,6 +101,20 @@ GXVoid GXCamera::SetRotation ( const GXMat4 &rotation )
 GXVoid GXCamera::SetRotation ( const GXQuat &rotation )
 {
 	rot_mat.SetRotation ( rotation );
+
+	UpdateClipPlanes ();
+}
+
+GXVoid GXCamera::SetModelMatrix ( const GXMat4 &matrix )
+{
+	GXSetMat4ClearRotation ( rot_mat, matrix );
+	trans_mat.wv = matrix.wv;
+
+	mod_mat = matrix;
+	GXSetMat4Inverse ( view_mat, mod_mat );
+	GXMulMat4Mat4 ( view_proj_mat, view_mat, proj_mat );
+
+	UpdateClipPlanes ();
 }
 
 GXVoid GXCamera::GetLocation ( GXVec3& outLocation )

@@ -17,7 +17,7 @@ class EMUnitActor : public EMActor
 		EMUnitActorMesh*	mesh;
 
 	public:
-		EMUnitActor ( const GXWChar* name, const GXMat4 &origin );
+		EMUnitActor ( const GXWChar* name, const GXMat4 &transform );
 		virtual ~EMUnitActor ();
 
 		virtual GXVoid OnDrawCommonPass ();
@@ -25,7 +25,7 @@ class EMUnitActor : public EMActor
 		virtual GXVoid OnSave ( GXUByte** data );
 		virtual GXVoid OnLoad ( const GXUByte* data );
 		virtual GXUInt OnRequeredSaveSize ();
-		virtual GXVoid OnOriginChanged ();
+		virtual GXVoid OnTransformChanged ();
 };
 
 

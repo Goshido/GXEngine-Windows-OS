@@ -283,6 +283,7 @@ LRESULT CALLBACK GXInput::InputProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 		return 0;
 
 		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
 		{
 			gx_inputActiveDevice = KEYBOARD;
 			keysMask[ wParam << 1 ] = GX_TRUE;
@@ -307,6 +308,7 @@ LRESULT CALLBACK GXInput::InputProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 		return 0;
 
 		case WM_KEYUP:
+		case WM_SYSKEYUP:
 		{
 			keysMask[ ( wParam << 1 ) + 1 ] = GX_TRUE;
 		}

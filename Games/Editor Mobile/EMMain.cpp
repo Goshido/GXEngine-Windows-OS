@@ -5,20 +5,20 @@
 #include "EMUnitActor.h"
 #include "EMGlobals.h"
 #include "EMMoveTool.h"
+#include "EMViewer.h"
 #include <GXEngine/GXGlobals.h>
 #include <GXEngine/GXOpenGL.h>
 #include <GXEngine/GXCameraOrthographic.h>
-#include <GXEngine/GXCameraPerspective.h>
 
 
 GXCameraOrthographic*	em_HudCamera = 0;
-GXCameraPerspective*	em_SceneCamera = 0;
 EMUIButton*				em_Button1 = 0;
 EMUIButton*				em_Button2 = 0;
 EMUIMenu*				em_Menu = 0;
 EMDirectedLightActor*	em_DirectedLight = 0;
 EMUnitActor*			em_UnitActor = 0;
 EMMoveTool*				em_MoveTool = 0;
+EMViewer*				em_Viewer = 0;
 GXInt					em_MouseX = 0;
 GXInt					em_MouseY = 0;
 
@@ -100,13 +100,18 @@ GXVoid GXCALL EMOnObject ( GXUInt object )
 
 //-----------------------------------------------------------------------------
 
-GXFloat em_Angle = 0.0f;
+GXVoid GXCALL EMOnViewerTransformChanged ()
+{
+	em_MoveTool->OnViewerTransformChanged ();
+}
+
+//-----------------------------------------------------------------------------
 
 GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 {
 	gx_Core->GetTouchSurface ()->ExecuteMessages ();
 
-	gx_ActiveCamera = em_SceneCamera;
+	gx_ActiveCamera = em_Viewer->GetCamera ();
 	em_Renderer->StartCommonPass ();
 	
 	em_UnitActor->OnDrawCommonPass ();
@@ -123,20 +128,11 @@ GXBool GXCALL EMOnFrame ( GXFloat deltatime )
 	em_Renderer->StartHudMaskPass ();
 	EMDrawUIMasks ();
 
-	gx_ActiveCamera = em_SceneCamera;
+	gx_ActiveCamera = em_Viewer->GetCamera ();
 	em_MoveTool->OnDrawHudMaskPass ();
 
 	em_Renderer->PresentFrame ();
-	
-	/*GXMat4 r;
-	GXSetMat4RotationXYZ ( r, 2.0f * em_Angle, 1.5f * em_Angle, 4.0f * em_Angle );
 
-	em_UnitActor->SetOrigin ( r );
-	*/
-	em_Angle += deltatime * 0.5f;
-
-	//em_SceneCamera->SetRotation ( GXDegToRad ( 0.0f ), em_Angle, 0.0f );
-	
 	return GX_TRUE;
 }
 
@@ -147,14 +143,6 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 
 	em_Renderer = new EMRenderer ();
 	em_Renderer->SetOnObjectCallback ( &EMOnObject );
-
-	em_HudCamera = new GXCameraOrthographic ( w, h, 0.0f, 100.0f );
-	em_SceneCamera = new GXCameraPerspective ( GXDegToRad ( 60.0f ), w / h, 0.1f, 1000.0f );
-	//em_SceneCamera->SetLocation ( 0.0f, 0.0f, -10.0f );
-	//em_SceneCamera->SetRotation ( 0.0f, 0.0f, GX_MATH_PI );
-
-	em_SceneCamera->SetLocation ( -4.0f, 6.0f, -2.0f );
-	em_SceneCamera->SetRotation ( GXDegToRad ( 60.0f ), GXDegToRad ( 60.0f ), 0.0f );
 
 	GXLocale* locale = gx_Core->GetLocale ();
 	locale->SetLanguage ( GX_LANGUAGE_RU );
@@ -206,18 +194,22 @@ GXVoid GXCALL EMOnInitRenderableObjects ()
 	em_Menu->SetLayer ( 50.0f );
 	em_Menu->SetLocation ( 0.0f, h - gx_ui_Scale * 0.5f );
 
-	GXMat4 origin;
-	//GXSetMat4RotationXY ( origin, GXDegToRad ( 20.0f ), GXDegToRad ( 40.0f ) );
-	GXSetMat4Identity ( origin );
-	em_UnitActor = new EMUnitActor ( L"Unit actor 01", origin );
+	GXMat4 transfrom;
+	GXSetMat4Identity ( transfrom );
+	em_UnitActor = new EMUnitActor ( L"Unit actor 01", transfrom );
 
-	GXSetMat4RotationXY ( origin, GXDegToRad ( 30.0f ), GXDegToRad ( 30.0f ) );
-	em_DirectedLight = new EMDirectedLightActor ( L"Directed light 01", origin );
+	GXSetMat4RotationXY ( transfrom, GXDegToRad ( 30.0f ), GXDegToRad ( 30.0f ) );
+	em_DirectedLight = new EMDirectedLightActor ( L"Directed light 01", transfrom );
 
 	em_MoveTool = new EMMoveTool ();
 	em_MoveTool->Bind ();
 	em_MoveTool->SetActor ( em_UnitActor );
 	em_MoveTool->SetLocalMode ();
+
+	em_HudCamera = new GXCameraOrthographic ( w, h, 0.0f, 100.0f );
+	em_Viewer = new EMViewer ( &EMOnViewerTransformChanged );
+	em_Viewer->SetTarget ( em_UnitActor );
+	em_Viewer->CaptureInput ();
 
 	ShowCursor ( 1 );
 }
@@ -231,7 +223,6 @@ GXVoid GXCALL EMOnDeleteRenderableObjects ()
 	GXSafeDelete ( em_Button1 );
 	GXSafeDelete ( em_Button2 );
 	GXSafeDelete ( em_HudCamera );
-	GXSafeDelete ( em_SceneCamera );
 
 	em_MoveTool->UnBind ();
 	em_MoveTool->Delete ();

@@ -28,11 +28,11 @@ class EMActor
 	protected:
 		GXWChar*		name;
 		GXUInt			type;
-		GXMat4			origin;
+		GXMat4			transform;
 		GXBool			isVisible;
 
 	public:
-		EMActor ( const GXWChar* name, GXUInt type, const GXMat4 &origin );
+		EMActor ( const GXWChar* name, GXUInt type, const GXMat4 &transform );
 		virtual ~EMActor ();
 
 		virtual GXVoid OnDrawCommonPass ();
@@ -43,13 +43,13 @@ class EMActor
 		virtual GXVoid OnSave ( GXUByte** data );
 		virtual GXVoid OnLoad ( const GXUByte* data );
 		virtual GXUInt OnRequeredSaveSize ();
-		virtual GXVoid OnOriginChanged ();
+		virtual GXVoid OnTransformChanged ();
 
 		const GXWChar* GetName ();
 		GXUInt GetType ();
 
-		const GXMat4& GetOrigin ();
-		GXVoid SetOrigin ( const GXMat4 &origin );
+		const GXMat4& GetTransform ();
+		GXVoid SetTransform ( const GXMat4 &transform );
 
 		GXVoid Show ();
 		GXVoid Hide ();

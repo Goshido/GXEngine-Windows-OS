@@ -804,6 +804,9 @@
     <ClCompile Include="..\Sources\GXCommon\GXAVLTree.cpp">
       <Filter>Source Files\GXCommon</Filter>
     </ClCompile>
+    <ClCompile Include="..\Games\Editor Mobile\EMViewer.cpp">
+      <Filter>Source Files\Games\Editor Mobile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\GXCommon\GXMTRLoader.h">
@@ -1369,6 +1372,9 @@
     </ClInclude>
     <ClInclude Include="..\Games\Editor Mobile\EMUI.h">
       <Filter>Header Files\Games\Editor Mobile\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Games\Editor Mobile\EMViewer.h">
+      <Filter>Header Files\Games\Editor Mobile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

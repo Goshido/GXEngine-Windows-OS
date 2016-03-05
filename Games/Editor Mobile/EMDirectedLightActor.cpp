@@ -12,11 +12,11 @@ struct EMDirectedLightActorSaveData
 
 //---------------------------------------------------------------------------
 
-EMDirectedLightActor::EMDirectedLightActor ( const GXWChar* name, const GXMat4 &origin ):
-EMActor ( name, EM_DIRECTED_LIGHT_ACTOR_CLASS, origin )
+EMDirectedLightActor::EMDirectedLightActor ( const GXWChar* name, const GXMat4 &transform ):
+EMActor ( name, EM_DIRECTED_LIGHT_ACTOR_CLASS, transform )
 {
 	light = new EMDirectedLight ();
-	light->SetRotation ( origin );
+	light->SetRotation ( transform );
 }
 
 EMDirectedLightActor::~EMDirectedLightActor ()

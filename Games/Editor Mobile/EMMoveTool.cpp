@@ -52,9 +52,6 @@ GXVoid EMMoveTool::Bind ()
 	isLMBPressed = GX_FALSE;
 
 	em_Renderer->SetOnObjectCallback ( &OnObject );
-
-	gx_Core->GetInput ()->BindMouseMoveFunc ( &OnMouseMove );
-	gx_Core->GetInput ()->BindMouseButtonsFunc ( &OnMouseButton );
 }
 
 GXVoid EMMoveTool::SetActor ( EMActor* actor )
@@ -76,11 +73,16 @@ GXVoid EMMoveTool::SetActor ( EMActor* actor )
 GXVoid EMMoveTool::UnBind ()
 {
 	em_Tool = 0;
-
-	gx_Core->GetInput ()->UnBindMouseMoveFunc ();
-	gx_Core->GetInput ()->UnBindMouseButtonsFunc ();
-
 	em_Renderer->SetOnObjectCallback ( 0 );
+}
+
+GXVoid EMMoveTool::OnViewerTransformChanged ()
+{
+	GXVec3 deltaView ( 0.0f, 0.0f, 0.0f );
+	GXVec3 axisLocationView;
+	GXMulVec3Mat4AsPoint ( axisLocationView, startLocationWorld, gx_ActiveCamera->GetViewMatrix () );
+
+	gismoScaleCorrector = GetScaleCorrector ( axisLocationView, deltaView );
 }
 
 GXVoid EMMoveTool::OnDrawHudColorPass ()
@@ -106,10 +108,10 @@ GXVoid EMMoveTool::OnDrawHudColorPass ()
 	GXMat4 mod_mat;
 	GXMat4 mod_view_proj_mat;
 
-	const GXMat4& actorOrigin = actor->GetOrigin ();
+	const GXMat4& actorTransform = actor->GetTransform ();
 	GXSetMat4Scale ( scale_mat, gismoScaleCorrector, gismoScaleCorrector, gismoScaleCorrector );
 	GXMulMat4Mat4 ( mod_mat, gismoRotation, scale_mat );
-	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+	GXSetMat4TranslateTo ( mod_mat, actorTransform.m41, actorTransform.m42, actorTransform.m43 );
 	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
 
 	glUniformMatrix4fv ( clr_mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
@@ -158,10 +160,10 @@ GXVoid EMMoveTool::OnDrawHudMaskPass ()
 	GXMat4 mod_mat;
 	GXMat4 mod_view_proj_mat;
 
-	const GXMat4& actorOrigin = actor->GetOrigin ();
+	const GXMat4& actorTransform = actor->GetTransform ();
 	GXSetMat4Scale ( scale_mat, gismoScaleCorrector, gismoScaleCorrector, gismoScaleCorrector );
 	GXMulMat4Mat4 ( mod_mat, gismoRotation, scale_mat );
-	GXSetMat4TranslateTo ( mod_mat, actorOrigin.m41, actorOrigin.m42, actorOrigin.m43 );
+	GXSetMat4TranslateTo ( mod_mat, actorTransform.m41, actorTransform.m42, actorTransform.m43 );
 	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
 
 	glUniformMatrix4fv ( msk_mod_view_proj_matLocation, 1, GL_FALSE, mod_view_proj_mat.A );
@@ -180,6 +182,36 @@ GXVoid EMMoveTool::OnDrawHudMaskPass ()
 
 	glBindVertexArray ( 0 );
 	glUseProgram ( 0 );
+}
+
+GXVoid EMMoveTool::OnMouseMove ( const GXVec2 &mousePosition )
+{
+	mouseX = (GXUShort)mousePosition.x;
+	mouseY = (GXUShort)mousePosition.y;
+
+	if ( isLMBPressed && activeAxis != EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN )
+		OnMoveActor ();
+}
+
+GXVoid EMMoveTool::OnMouseButton ( EGXInputMouseFlags mouseflags )
+{
+	if ( mouseflags.lmb ) 
+	{
+		isLMBPressed = GX_TRUE;
+		em_Renderer->GetObject ( mouseX, mouseY );
+	}
+	else if ( isLMBPressed && !mouseflags.lmb )
+	{
+		if ( activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
+
+		GXSumVec3Vec3 ( startLocationWorld, startLocationWorld, deltaWorld );
+
+		GXMat4 newTransform = actor->GetTransform ();
+		newTransform.wv = startLocationWorld;
+		actor->SetTransform ( newTransform );
+
+		isLMBPressed = GX_FALSE;
+	}
 }
 
 GXVoid EMMoveTool::SetLocalMode ()
@@ -236,14 +268,14 @@ GXVoid EMMoveTool::SetMode ( GXUByte mode )
 	this->mode = mode;
 	if ( !gx_ActiveCamera ) return;
 
-	const GXMat4& actorOrigin = actor->GetOrigin ();
-	startLocationWorld = actorOrigin.wv;
+	const GXMat4& actorTransform = actor->GetTransform ();
+	startLocationWorld = actorTransform.wv;
 	memset ( &deltaWorld, 0, sizeof ( GXVec3 ) );
 
 	switch ( mode )
 	{
 		case EM_MOVE_TOOL_LOCAL_MODE:
-			GXSetMat4ClearRotation ( gismoRotation, actorOrigin );
+			GXSetMat4ClearRotation ( gismoRotation, actorTransform );
 		break;
 
 		case EM_MOVE_TOOL_WORLD_MODE:
@@ -287,10 +319,10 @@ GXVoid EMMoveTool::OnMoveActor ()
 	gismoScaleCorrector = GetScaleCorrector ( axisLocationView, deltaView );
 
 	GXMulVec3Mat4AsNormal ( deltaWorld, deltaView, gx_ActiveCamera->GetModelMatrix () );
-	GXMat4 newOrigin = actor->GetOrigin ();
-	GXSumVec3Vec3 ( newOrigin.wv, startLocationWorld, deltaWorld );
+	GXMat4 newTransform = actor->GetTransform ();
+	GXSumVec3Vec3 ( newTransform.wv, startLocationWorld, deltaWorld );
 
-	actor->SetOrigin ( newOrigin );
+	actor->SetTransform ( newTransform );
 }
 
 GXVoid EMMoveTool::GetAxis ( GXVec3& axisView )
@@ -371,35 +403,5 @@ GXVoid GXCALL EMMoveTool::OnObject ( GXUInt object )
 		case EM_MOVE_TOOL_LOCAL_MODE:
 			em_mt_Me->SetLocalMode ();
 		break;
-	}
-}
-
-GXVoid GXCALL EMMoveTool::OnMouseMove ( GXInt win_x, GXInt win_y )
-{
-	em_mt_Me->mouseX = (GXUShort)win_x;
-	em_mt_Me->mouseY = (GXUShort)( gx_Core->GetRenderer ()->GetHeight () - win_y );
-
-	if ( em_mt_Me->isLMBPressed && em_mt_Me->activeAxis != EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN )
-		em_mt_Me->OnMoveActor ();
-}
-
-GXVoid GXCALL EMMoveTool::OnMouseButton ( EGXInputMouseFlags mouseflags )
-{
-	if ( mouseflags.lmb ) 
-	{
-		em_mt_Me->isLMBPressed = GX_TRUE;
-		em_Renderer->GetObject ( em_mt_Me->mouseX, em_mt_Me->mouseY );
-	}
-	else
-	{
-		if ( em_mt_Me->activeAxis == EM_MOVE_TOOL_ACTIVE_AXIS_UNKNOWN ) return;
-
-		GXSumVec3Vec3 ( em_mt_Me->startLocationWorld, em_mt_Me->startLocationWorld, em_mt_Me->deltaWorld );
-
-		GXMat4 newOrigin = em_mt_Me->actor->GetOrigin ();
-		newOrigin.wv = em_mt_Me->startLocationWorld;
-		em_mt_Me->actor->SetOrigin ( newOrigin );
-
-		em_mt_Me->isLMBPressed = GX_FALSE;
 	}
 }

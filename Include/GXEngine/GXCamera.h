@@ -1,4 +1,4 @@
-//version 1.7
+//version 1.8
 
 #ifndef GX_CAMERA
 #define GX_CAMERA
@@ -41,6 +41,8 @@ class GXCamera
 		GXVoid SetRotation ( GXFloat pitch_rad, GXFloat yaw_rad, GXFloat roll_rad );
 		GXVoid SetRotation ( const GXMat4 &rotation );
 		GXVoid SetRotation ( const GXQuat &rotation );
+
+		GXVoid SetModelMatrix ( const GXMat4 &matrix );
 
 		GXVoid GetLocation ( GXVec3& out );
 		GXVec3* GetLocation ();

@@ -56,6 +56,7 @@ GXVoid EMUnitActorMesh::Draw ()
 	GXMat4 mod_view_proj_mat;
 
 	GXMulMat4Mat4 ( mod_view_mat, mod_mat, gx_ActiveCamera->GetViewMatrix () );
+
 	GXMulMat4Mat4 ( mod_view_proj_mat, mod_mat, gx_ActiveCamera->GetViewProjectionMatrix () );
 
 	glUseProgram ( mat_info.shaders[ 0 ].uiId );
@@ -143,11 +144,11 @@ GXVoid EMUnitActorMesh::InitUniforms ()
 
 //-------------------------------------------------------------------------------------------
 
-EMUnitActor::EMUnitActor ( const GXWChar* name, const GXMat4 &origin ):
-EMActor ( name, EM_UNIT_ACTOR_CLASS, origin )
+EMUnitActor::EMUnitActor ( const GXWChar* name, const GXMat4 &transform ):
+EMActor ( name, EM_UNIT_ACTOR_CLASS, transform )
 {
 	mesh = new EMUnitActorMesh ();
-	OnOriginChanged ();
+	OnTransformChanged ();
 }
 
 EMUnitActor::~EMUnitActor ()
@@ -166,7 +167,7 @@ GXVoid EMUnitActor::OnSave ( GXUByte** data )
 	EMActorHeader* header = (EMActorHeader*)data;
 
 	header->type = type;
-	memcpy ( &header->origin, &origin, sizeof ( GXMat4 ) );
+	memcpy ( &header->origin, &transform, sizeof ( GXMat4 ) );
 	header->isVisible = isVisible;
 	header->nameOffset = sizeof ( EMActorHeader );
 
@@ -188,7 +189,7 @@ GXVoid EMUnitActor::OnLoad ( const GXUByte* data )
 	GXSafeFree ( name );
 	GXToWcs ( &name, (GXUTF8*)( data + header->nameOffset ) );
 
-	memcpy ( &origin, &header->origin, sizeof ( GXMat4 ) );
+	memcpy ( &transform, &header->origin, sizeof ( GXMat4 ) );
 }
 
 GXUInt EMUnitActor::OnRequeredSaveSize ()
@@ -203,12 +204,12 @@ GXUInt EMUnitActor::OnRequeredSaveSize ()
 	return total;
 }
 
-GXVoid EMUnitActor::OnOriginChanged ()
+GXVoid EMUnitActor::OnTransformChanged ()
 {
-	mesh->SetLocation ( origin.wv );
+	mesh->SetLocation ( transform.wv );
 
 	GXMat4 cleanRotation;
-	GXSetMat4ClearRotation ( cleanRotation, origin );
+	GXSetMat4ClearRotation ( cleanRotation, transform );
 
 	mesh->SetRotation ( cleanRotation );
 }
